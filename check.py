@@ -20,6 +20,9 @@ from typing import List, Tuple
 import yaml
 from dockerfile_parse import DockerfileParser
 
+import warnings
+warnings.filterwarnings("ignore", category=DeprecationWarning, message=".*datetime.datetime.utcnow.*")
+
 BASE_DIR = Path(__file__).resolve().absolute().parent
 SERVICES_PATH = BASE_DIR / "services"
 CHECKERS_PATH = BASE_DIR / "checkers"

@@ -1,0 +1,23 @@
+services:
+  flagbin:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "52420:52420"
+
+    read_only: true
+    tmpfs:
+      - /tmp:size=300M,noexec
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    user: "1000:1000"
+
+    restart: unless-stopped
