@@ -11,8 +11,8 @@ services:
       - /tmp:size=300M,noexec
 
     pids_limit: 1024
-    mem_limit: 400M
-    cpus: 0.5
+    mem_limit: 512M
+    cpus: 1
 
     security_opt:
       - no-new-privileges:true

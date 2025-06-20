@@ -2,9 +2,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
+#include <signal.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <sys/random.h>
 #include "flagsdb/flagsdb.h"
 
 
@@ -53,14 +54,27 @@ void retrieve_flag() {
     printf(flag);
 }
 
+
 void list_available_flags() {
     char *flags = flagsdb_get_existing() + 5;
     for (int i = 0; flags[i]; i += 9)
         printf("%.3s*****\n", flags + i);
 }
 
+
+void alarm_handler(int sig) {
+    puts("Dont share too much flags, you might get caught!");
+    exit(0);
+}
+
+
 void init() {
-    srandom(time(0));
+    unsigned seed;
+    getrandom(&seed, sizeof(seed), 0);
+    srandom(seed);
+
+    signal(SIGALRM, alarm_handler);
+    alarm(30);
 
     setvbuf(stdout, NULL, _IONBF, 0);
     setvbuf(stderr, NULL, _IONBF, 0);
