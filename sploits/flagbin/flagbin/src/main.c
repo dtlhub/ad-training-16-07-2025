@@ -51,7 +51,7 @@ void retrieve_flag() {
         return;
     }
 
-    printf(flag);
+    puts(flag);
 }
 
 
