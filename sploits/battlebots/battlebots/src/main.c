@@ -95,7 +95,7 @@ void leave_feedback() {
 
         printf("Enter your feedback > ");
         fgets(feedback, 512, stdin);
-        strcat(feedback, "\n Thank you for your feedback! Our team is really busy right now but we will try to review your feedback as soon as we can!");
+        strcat(feedback, "\nThank you for your feedback! Our team is really busy right now but we will try to review your feedback as soon as we can!\n");
 
         FILE *pfchat = fopen(path, "w");
         fprintf(pfchat, "%s", feedback);
@@ -118,7 +118,7 @@ void leave_feedback() {
             printf("%s", feedback);
         fclose(pfchat);
 
-        printf("Enter your message > ");
+        printf("\nEnter your message > ");
         fgets(feedback, 512, stdin);
         pfchat = fopen(path, "a");
         fprintf(pfchat, "%s", feedback);
