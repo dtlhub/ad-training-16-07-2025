@@ -8,37 +8,35 @@ class CheckMachine:
     def __init__(self, checker: BaseChecker):
         self.c = checker
         self.port = PORT
+        self.r = None
+
+    def connect(self):
+        self.r = remote(self.c.host, self.port)
+
+    def disconnect(self):
+        self.r.close()
+        self.r = None
 
     def store_flag(self, flag: str) -> str:
-        r = remote(self.c.host, self.port)
+        self.r.sendlineafter(b'--> ', b'1')
+        self.r.sendlineafter(b'Flag: ', flag.encode())
+        self.r.recvuntil(b'Flag id: ')
 
-        r.sendlineafter(b'--> ', b'1')
-        r.sendlineafter(b': ', flag.encode())
-        r.recvuntil(b': ')
+        flag_id = self.r.recvuntil(b'\n').decode()
 
-        flag_id = r.recvuntil(b'\n').decode()
-
-        r.close()
         return flag_id
 
     def retrieve_flag(self, flag_id: str) -> str:
-        r = remote(self.c.host, self.port)
+        self.r.sendlineafter(b'--> ', b'2')
+        self.r.sendlineafter(b'Flag id: ', flag_id.encode())
+        self.r.sendlineafter(b'Offset: ', b'0')
 
-        r.sendlineafter(b'--> ', b'2')
-        r.sendlineafter(b': ', flag_id.encode())
-        r.sendlineafter(b': ', b'0')
+        flag = self.r.recvline().decode().strip()
 
-        flag = r.recvline().decode().strip()
-
-        r.close()
         return flag
 
-
     def list_flags(self) -> str:
-        r = remote(self.c.host, self.port)
+        self.r.sendlineafter(b'--> ', b'3')
+        flags = self.r.recvuntil(b'[1]').decode()
 
-        r.sendlineafter(b'--> ', b'3')
-        flags = r.recvuntil(b'[1]').decode()
-
-        r.close()
         return flags
