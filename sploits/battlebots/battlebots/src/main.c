@@ -2,7 +2,7 @@
 #include <string.h>
 #include <sys/random.h>
 #include <stdlib.h>
-#include <sys/signal.h>
+#include <signal.h>
 #include <unistd.h>
 
 
@@ -157,7 +157,7 @@ int menu() {
     );
 
     long long choice = read_int();
-    int inp;
+    long long inp;
     switch (choice) {
         case 1:
             printf("Battlebot ID > ");
@@ -185,6 +185,7 @@ int menu() {
 }
 
 int main() {
+    init();
     puts("   █████                █████     █████    ████           █████               █████           \n"
          "  ░░███                ░░███     ░░███    ░░███          ░░███               ░░███            \n"
          "   ░███████   ██████   ███████   ███████   ░███   ██████  ░███████   ██████  ███████    █████ \n"
