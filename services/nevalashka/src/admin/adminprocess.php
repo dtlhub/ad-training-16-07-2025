@@ -1,4 +1,4 @@
-<?php
+<?
 /**
  * AdminProcess.php
  * 
@@ -7,9 +7,12 @@
  * member system adjustments.
  *
  * Written by: Jpmaster77 a.k.a. The Grandmaster of C++ (GMC)
- * Last Updated: August 2, 2009 by Ivan Novak
+ * Last Updated: August 15, 2004
  */
+
+
 include("../include/session.php");
+include("../php7-mysql-shim/lib/mysql.php");
 
 class AdminProcess
 {
@@ -177,7 +180,7 @@ class AdminProcess
          /* Make sure username is in database */
          $subuser = stripslashes($subuser);
          if(strlen($subuser) < 5 || strlen($subuser) > 30 ||
-            !preg_match("/^([0-9a-z])+$/i", $subuser) ||
+            !eregi("^([0-9a-z])+$", $subuser) ||
             (!$ban && !$database->usernameTaken($subuser))){
             $form->setError($field, "* Username does not exist<br>");
          }

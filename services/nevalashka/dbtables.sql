@@ -20,7 +20,7 @@
 #  Table structure for users table
 #
 
-SELECT DATABASE nevalashka;
+USE nevalashka;
 
 CREATE TABLE users (
  username varchar(30) primary key,

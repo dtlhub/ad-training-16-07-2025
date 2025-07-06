@@ -1,4 +1,4 @@
-<?php
+<?
 /**
  * Register.php
  * 
@@ -7,23 +7,16 @@
  * can't register another name.
  *
  * Written by: Jpmaster77 a.k.a. The Grandmaster of C++ (GMC)
- * Last Updated: August 2, 2009 by Ivan Novak
+ * Last Updated: August 19, 2004
  */
 include("include/session.php");
 ?>
 
 <html>
-<head>
-	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-	<title>Jpmaster77's Login Script</title>
-	<link rel="stylesheet" href="-css/960/reset.css" type="text/css" />
-	<link rel="stylesheet" href="-css/960/960.css" type="text/css" />
-	<link rel="stylesheet" href="-css/960/text.css" type="text/css" />	
-	<link rel="stylesheet" href="-css/style.css" type="text/css" />
-</head>
+<title>Registration Page</title>
 <body>
-<div id="main" class="container_12">
-<?php
+
+<?
 /**
  * The user is already logged in, not allowed to register.
  */
@@ -40,12 +33,8 @@ else if(isset($_SESSION['regsuccess'])){
    /* Registration was successful */
    if($_SESSION['regsuccess']){
       echo "<h1>Registered!</h1>";
-      if(EMAIL_WELCOME){
-         echo "<p>Thankyou <b>".$_SESSION['reguname']."</b>, you have been sent a confirmation email which should be arriving shortly.  Please confirm your registration before you continue.<br />Back to <a href='main.php'>Main</a></p>";
-      }else{
       echo "<p>Thank you <b>".$_SESSION['reguname']."</b>, your information has been added to the database, "
           ."you may now <a href=\"main.php\">log in</a>.</p>";
-      }
    }
    /* Registration failed */
    else{
@@ -66,24 +55,26 @@ else{
 ?>
 
 <h1>Register</h1>
-<?php
+<?
 if($form->num_errors > 0){
    echo "<td><font size=\"2\" color=\"#ff0000\">".$form->num_errors." error(s) found</font></td>";
 }
 ?>
-<div id="register">
-	<form action="process.php" method="POST">
-		<p class="textinput">Name: </p><p><input type="text" name="name" maxlength="30" value="<?php echo $form->value("name"); ?>"><?php echo $form->error("name"); ?></p>
-		<p class="textinput">Username: </p><p><input type="text" name="user" maxlength="30" value="<?php echo $form->value("user"); ?>"><?php echo $form->error("user"); ?></p>
-		<p class="textinput">Password: </p><p><input type="password" name="pass" maxlength="30" value="<?php echo $form->value("pass"); ?>"><?php echo $form->error("pass"); ?></p>
-		<p class="textinput">Email: </p><p><input type="text" name="email" maxlength="50" value="<?php echo $form->value("email"); ?>"><?php echo $form->error("email"); ?></p>
-		<p class="textinput"><input type="hidden" name="subjoin" value="1"><input type="submit" value="Join!"></p>
-		<p><a href="main.php">[Back to Main]</a></p>
-	</form>
-</div>
-<?php
+<form action="process.php" method="POST">
+<table align="left" border="0" cellspacing="0" cellpadding="3">
+<tr><td>Username:</td><td><input type="text" name="user" maxlength="30" value="<? echo $form->value("user"); ?>"></td><td><? echo $form->error("user"); ?></td></tr>
+<tr><td>Password:</td><td><input type="password" name="pass" maxlength="30" value="<? echo $form->value("pass"); ?>"></td><td><? echo $form->error("pass"); ?></td></tr>
+<tr><td>Email:</td><td><input type="text" name="email" maxlength="50" value="<? echo $form->value("email"); ?>"></td><td><? echo $form->error("email"); ?></td></tr>
+<tr><td colspan="2" align="right">
+<input type="hidden" name="subjoin" value="1">
+<input type="submit" value="Join!"></td></tr>
+<tr><td colspan="2" align="left"><a href="main.php">Back to Main</a></td></tr>
+</table>
+</form>
+
+<?
 }
 ?>
-</div>
+
 </body>
 </html>
