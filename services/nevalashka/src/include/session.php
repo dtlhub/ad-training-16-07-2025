@@ -1,4 +1,4 @@
-<?php
+<?
 /**
  * Session.php
  * 
@@ -6,7 +6,7 @@
  * track of logged in users and also guests.
  *
  * Written by: Jpmaster77 a.k.a. The Grandmaster of C++ (GMC)
- * Last Updated: June 15, 2011 by Ivan Novak
+ * Last Updated: August 19, 2004
  */
 include("database.php");
 include("mailer.php");
@@ -108,14 +108,6 @@ class Session
          $this->username  = $this->userinfo['username'];
          $this->userid    = $this->userinfo['userid'];
          $this->userlevel = $this->userinfo['userlevel'];
-         
-         /* auto login hash expires in three days */
-         if($this->userinfo['hash_generated'] < (time() - (60*60*24*3))){
-         	/* Update the hash */
-	         $database->updateUserField($this->userinfo['username'], 'hash', $this->generateRandID());
-	         $database->updateUserField($this->userinfo['username'], 'hash_generated', time());
-         }
-         
          return true;
       }
       /* User not logged in */
@@ -135,19 +127,15 @@ class Session
 
       /* Username error checking */
       $field = "user";  //Use field name for username
-	  $q = "SELECT valid FROM ".TBL_USERS." WHERE username='$subuser'";
-	  $valid = $database->query($q);
-	  $valid = mysql_fetch_array($valid);
-	  	      
       if(!$subuser || strlen($subuser = trim($subuser)) == 0){
          $form->setError($field, "* Username not entered");
       }
       else{
          /* Check if username is not alphanumeric */
-         if(!ctype_alnum($subuser)){
+         if(!eregi("^([0-9a-z])*$", $subuser)){
             $form->setError($field, "* Username not alphanumeric");
          }
-      }	  
+      }
 
       /* Password error checking */
       $field = "pass";  //Use field name for password
@@ -178,20 +166,6 @@ class Session
       if($form->num_errors > 0){
          return false;
       }
-
-      
-      if(EMAIL_WELCOME){
-      	if($valid['valid'] == 0){
-      		$form->setError($field, "* User's account has not yet been confirmed.");
-      	}
-      }
-                  
-      /* Return if form errors exist */
-      if($form->num_errors > 0){
-         return false;
-      }
-      
-
 
       /* Username and password correct, register session variables */
       $this->userinfo  = $database->getUserInfo($subuser);
@@ -264,8 +238,7 @@ class Session
     * 1. If no errors were found, it registers the new user and
     * returns 0. Returns 2 if registration failed.
     */
-   function register($subuser, $subpass, $subemail, $subname){
-   
+   function register($subuser, $subpass, $subemail){
       global $database, $form, $mailer;  //The database, form and mailer object
       
       /* Username error checking */
@@ -283,7 +256,7 @@ class Session
             $form->setError($field, "* Username above 30 characters");
          }
          /* Check if username is not alphanumeric */
-         else if(!ctype_alnum($subuser)){
+         else if(!eregi("^([0-9a-z])+$", $subuser)){
             $form->setError($field, "* Username not alphanumeric");
          }
          /* Check if username is reserved */
@@ -312,7 +285,7 @@ class Session
             $form->setError($field, "* Password too short");
          }
          /* Check if password is not alphanumeric */
-         else if(!ctype_alnum(($subpass = trim($subpass)))){
+         else if(!eregi("^([0-9a-z])+$", ($subpass = trim($subpass)))){
             $form->setError($field, "* Password not alphanumeric");
          }
          /**
@@ -330,36 +303,24 @@ class Session
       }
       else{
          /* Check if valid email address */
-         if(filter_var($subemail, FILTER_VALIDATE_EMAIL) == FALSE){
+         $regex = "^[_+a-z0-9-]+(\.[_+a-z0-9-]+)*"
+                 ."@[a-z0-9-]+(\.[a-z0-9-]{1,})*"
+                 ."\.([a-z]{2,}){1}$";
+         if(!eregi($regex,$subemail)){
             $form->setError($field, "* Email invalid");
          }
-         /* Check if email is already in use */
-         if($database->emailTaken($subemail)){
-            $form->setError($field, "* Email already in use");
-         }
-
          $subemail = stripslashes($subemail);
       }
-      
-      /* Name error checking */
-	  $field = "name";
-	  if(!$subname || strlen($subname = trim($subname)) == 0){
-	     $form->setError($field, "* Name not entered");
-	  } else {
-	     $subname = stripslashes($subname);
-	  }
-      
-      $randid = $this->generateRandID();
-      
+
       /* Errors exist, have user correct them */
       if($form->num_errors > 0){
          return 1;  //Errors with form
       }
       /* No errors, add the new account to the */
       else{
-         if($database->addNewUser($subuser, md5($subpass), $subemail, $randid, $subname)){
-            if(EMAIL_WELCOME){               
-               $mailer->sendWelcome($subuser,$subemail,$subpass,$randid);
+         if($database->addNewUser($subuser, md5($subpass), $subemail)){
+            if(EMAIL_WELCOME){
+               $mailer->sendWelcome($subuser,$subemail,$subpass);
             }
             return 0;  //New user added succesfully
          }else{
@@ -375,7 +336,7 @@ class Session
     * format, the change is made. All other fields are changed
     * automatically.
     */
-   function editAccount($subcurpass, $subnewpass, $subemail, $subname){
+   function editAccount($subcurpass, $subnewpass, $subemail){
       global $database, $form;  //The database and form object
       /* New password entered */
       if($subnewpass){
@@ -388,7 +349,7 @@ class Session
             /* Check if password too short or is not alphanumeric */
             $subcurpass = stripslashes($subcurpass);
             if(strlen($subcurpass) < 4 ||
-               !preg_match("^([0-9a-z])+$", ($subcurpass = trim($subcurpass)))){
+               !eregi("^([0-9a-z])+$", ($subcurpass = trim($subcurpass)))){
                $form->setError($field, "* Current Password incorrect");
             }
             /* Password entered is incorrect */
@@ -405,7 +366,7 @@ class Session
             $form->setError($field, "* New Password too short");
          }
          /* Check if password is not alphanumeric */
-         else if(!preg_match("^([0-9a-z])+$", ($subnewpass = trim($subnewpass)))){
+         else if(!eregi("^([0-9a-z])+$", ($subnewpass = trim($subnewpass)))){
             $form->setError($field, "* New Password not alphanumeric");
          }
       }
@@ -420,19 +381,14 @@ class Session
       $field = "email";  //Use field name for email
       if($subemail && strlen($subemail = trim($subemail)) > 0){
          /* Check if valid email address */
-         if(filter_var($subemail, FILTER_VALIDATE_EMAIL) == FALSE){
+         $regex = "^[_+a-z0-9-]+(\.[_+a-z0-9-]+)*"
+                 ."@[a-z0-9-]+(\.[a-z0-9-]{1,})*"
+                 ."\.([a-z]{2,}){1}$";
+         if(!eregi($regex,$subemail)){
             $form->setError($field, "* Email invalid");
          }
          $subemail = stripslashes($subemail);
       }
-      
-      /* Name error checking */
-	  $field = "name";
-	  if(!$subname || strlen($subname = trim($subname)) == 0){
-	     $form->setError($field, "* Name not entered");
-	  } else {
-	     $subname = stripslashes($subname);
-	  }
       
       /* Errors exist, have user correct them */
       if($form->num_errors > 0){
@@ -449,11 +405,6 @@ class Session
          $database->updateUserField($this->username,"email",$subemail);
       }
       
-      /* Change Name */
-      if($subname){
-         $database->updateUserField($this->username,"name",$subname);
-      }
-      
       /* Success! */
       return true;
    }
@@ -465,15 +416,6 @@ class Session
    function isAdmin(){
       return ($this->userlevel == ADMIN_LEVEL ||
               $this->username  == ADMIN_NAME);
-   }
-   
-   /**
-    * isAuthor - Returns true if currently logged in user is
-    * an author or an administrator, false otherwise.
-    */
-   function isAuthor(){
-      return ($this->userlevel == AUTHOR_LEVEL ||
-              $this->userlevel == ADMIN_LEVEL);
    }
    
    /**
@@ -503,13 +445,6 @@ class Session
          }
       }
       return $randstr;
-   }
-   
-   function cleanInput($post = array()) {
-       foreach($post as $k => $v){
-            $post[$k] = trim(htmlspecialchars($v));
-         }
-         return $post;
    }
 };
 

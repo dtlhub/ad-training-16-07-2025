@@ -1,4 +1,4 @@
-<?php
+<?
 /**
  * UserInfo.php
  *
@@ -6,39 +6,51 @@
  * with a link added for them to edit the information.
  *
  * Written by: Jpmaster77 a.k.a. The Grandmaster of C++ (GMC)
- * Last Updated: August 2, 2009 by Ivan Novak
+ * Last Updated: August 26, 2004
  */
 include("include/session.php");
-$page = "userinfo.php";
 ?>
 
 <html>
-<head>
-	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-	<title>Jpmaster77's Login Script</title>
-	<link rel="stylesheet" href="-css/960/reset.css" type="text/css" />
-	<link rel="stylesheet" href="-css/960/960.css" type="text/css" />
-	<link rel="stylesheet" href="-css/960/text.css" type="text/css" />	
-	<link rel="stylesheet" href="-css/style.css" type="text/css" />
-</head>
+<title>Jpmaster77's Login Script</title>
 <body>
-<div id="main" class="container_12">
-<?php
+
+<?
+
+function displayPublicationsFromUser($userid){
+   global $database;
+   $q = "SELECT pub_id,userid,filename "
+   ."FROM ".TBL_PUBS." WHERE userid = '" . $userid . "' ORDER BY userid";
+   $result = $database->query($q);
+   /* Error occurred, return given name by default */
+   $num_rows = mysql_numrows($result);
+   if(!$result || ($num_rows < 0)){
+      echo "Error displaying info";
+      return;
+   }
+   if($num_rows == 0){
+      echo "Database table empty";
+      return;
+   }
+   /* Display table contents */
+   echo "<table align=\"left\" border=\"1\" cellspacing=\"0\" cellpadding=\"3\">\n";
+   echo "<tr><td><b>Publication ID</b></td><td><b>User ID</b></td><td><b>Filename</b></td></tr>\n";
+   for($i=0; $i<$num_rows; $i++){
+      $pubid  = mysql_result($result,$i,"pub_id");
+      $userid = mysql_result($result,$i,"userid");
+      $filename  = mysql_result($result,$i,"filename");
+
+      echo "<tr><td>$pubid</td><td>$userid</td><td>$filename</td></tr>\n";
+   }
+   echo "</table><br>\n";
+}
+
 /* Requested Username error checking */
 $req_user = trim($_GET['user']);
 if(!$req_user || strlen($req_user) == 0 ||
-   !preg_match("/^([0-9a-z])+$/i", $req_user) ||
+   !eregi("^([0-9a-z])+$", $req_user) ||
    !$database->usernameTaken($req_user)){
    die("Username not registered");
-}
-
-if(MAIL){
- $q = "SELECT mail_id FROM ".TBL_MAIL." WHERE UserTo = '$session->username' and status = 'unread'";
- $numUnreadMail = $database->query($q) or die(mysql_error());
- $numUnreadMail = mysql_num_rows($numUnreadMail);
- 
- echo "<div class='grid_5'><p class='right'>[<a href=\"mail.php\">You have $numUnreadMail Unread Mail</a>]&nbsp;</p></div>";
- echo "<div class='clear'></div>";
 }
 
 /* Logged in user viewing own account */
@@ -53,14 +65,13 @@ else{
 /* Display requested user information */
 $req_user_info = $database->getUserInfo($req_user);
 
-/* Name */
-echo "<p><b>Name: ".$req_user_info['name']."</b><br />";
-
 /* Username */
-echo "<p><b>Username: ".$req_user_info['username']."</b><br />";
+echo "<b>Username: ".$req_user_info['username']."</b><br>";
 
 /* Email */
-echo "<b>Email:</b> ".$req_user_info['email']."</p>";
+echo "<b>Email:</b> ".$req_user_info['email']."<br>";
+
+displayPublicationsFromUser($req_user_info['username']);
 
 /**
  * Note: when you add your own fields to the users table
@@ -76,20 +87,13 @@ echo "<b>Email:</b> ".$req_user_info['email']."</p>";
 
 /* If logged in user viewing own account, give link to edit */
 if(strcmp($session->username,$req_user) == 0){
-   echo "<a href=\"useredit.php\">Edit Account Information</a><br><br>";
+   echo "<br><a href=\"useredit.php\">Edit Account Information</a><br>";
 }
 
 /* Link back to main */
-echo "[<a href=\"main.php\">Main</a>] ";
-
-
-if($session->isAdmin()){
-   echo "[<a href=\"admin/admin.php\">Admin Center</a>]&nbsp;";
-}
-
-
+echo "<br>Back To [<a href=\"main.php\">Main</a>]<br>";
 
 ?>
-</div>
+
 </body>
 </html>

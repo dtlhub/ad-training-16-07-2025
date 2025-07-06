@@ -1,4 +1,4 @@
-<?php
+<?
 /**
  * Constants.php
  *
@@ -7,21 +7,19 @@
  * the login script.
  *
  * Written by: Jpmaster77 a.k.a. The Grandmaster of C++ (GMC)
- * Last Updated: August 2, 2009 by Ivan Novak
+ * Last Updated: August 19, 2004
  */
-
-define("BASEURL", "http://www.example.com/");
-
+ 
 /**
  * Database Constants - these constants are required
  * in order for there to be a successful connection
  * to the MySQL database. Make sure the information is
  * correct.
  */
-define("DB_SERVER", "localhost");
-define("DB_USER", "your_user");
-define("DB_PASS", "your_pass");
-define("DB_NAME", "your_db");
+define("DB_SERVER", "db");
+define("DB_USER", "nevalashka");
+define("DB_PASS", "8aghsdf890ahfw98h2w3");
+define("DB_NAME", "nevalashka");
 
 /**
  * Database Table Constants - these constants
@@ -29,10 +27,10 @@ define("DB_NAME", "your_db");
  * in the script.
  */
 define("TBL_USERS", "users");
+define("TBL_PUBS", "publications");
 define("TBL_ACTIVE_USERS",  "active_users");
 define("TBL_ACTIVE_GUESTS", "active_guests");
 define("TBL_BANNED_USERS",  "banned_users");
-define("TBL_MAIL", "mail");
 
 /**
  * Special Names and Level Constants - the admin
@@ -46,7 +44,6 @@ define("TBL_MAIL", "mail");
 define("ADMIN_NAME", "admin");
 define("GUEST_NAME", "Guest");
 define("ADMIN_LEVEL", 9);
-define("AUTHOR_LEVEL", 5);
 define("USER_LEVEL",  1);
 define("GUEST_LEVEL", 0);
 
@@ -82,9 +79,9 @@ define("COOKIE_PATH", "/");  //Avaible in whole domain
  * sends to users, and whether to send a
  * welcome email to newly registered users.
  */
-define("EMAIL_FROM_NAME", "Ivan Novak");
-define("EMAIL_FROM_ADDR", "inovak1@gmail.com");
-define("EMAIL_WELCOME", true);
+define("EMAIL_FROM_NAME", "YourName");
+define("EMAIL_FROM_ADDR", "youremail@address.com");
+define("EMAIL_WELCOME", false);
 
 /**
  * This constant forces all users to have
@@ -92,15 +89,4 @@ define("EMAIL_WELCOME", true);
  * converted automatically.
  */
 define("ALL_LOWERCASE", false);
-
-/**
- * This defines the absolute path
- */
-define("ABSPATH", dirname(__FILE__).'/');
-
-/**
- * This boolean constant controls wheter or
- * not the user to user mail function is active
- */
-define("MAIL", true)
 ?>

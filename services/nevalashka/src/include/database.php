@@ -1,4 +1,4 @@
-<?php
+<?
 /**
  * Database.php
  * 
@@ -6,9 +6,10 @@
  * information from the website's database.
  *
  * Written by: Jpmaster77 a.k.a. The Grandmaster of C++ (GMC)
- * Last Updated: June 15, 2011 by Ivan Novak
+ * Last Updated: August 17, 2004
  */
 include("constants.php");
+include("php7-mysql-shim/lib/mysql.php");
       
 class MySQLDB
 {
@@ -55,8 +56,7 @@ class MySQLDB
       }
 
       /* Verify that user is in database */
-      $q = sprintf("SELECT password FROM ".TBL_USERS." where username = '%s'",
-            mysql_real_escape_string($username));
+      $q = "SELECT password FROM ".TBL_USERS." WHERE username = '$username'";
       $result = mysql_query($q, $this->connection);
       if(!$result || (mysql_numrows($result) < 1)){
          return 1; //Indicates username failure
@@ -91,8 +91,7 @@ class MySQLDB
       }
 
       /* Verify that user is in database */
-      $q = sprintf("SELECT userid FROM ".TBL_USERS." WHERE username= '%s'",
-            mysql_real_escape_string($username));
+      $q = "SELECT userid FROM ".TBL_USERS." WHERE username = '$username'";
       $result = mysql_query($q, $this->connection);
       if(!$result || (mysql_numrows($result) < 1)){
          return 1; //Indicates username failure
@@ -120,27 +119,11 @@ class MySQLDB
       if(!get_magic_quotes_gpc()){
          $username = addslashes($username);
       }
-      $q = sprintf("SELECT username FROM ".TBL_USERS." WHERE username = '%s'",
-            mysql_real_escape_string($username));
+      $q = "SELECT username FROM ".TBL_USERS." WHERE username = '$username'";
       $result = mysql_query($q, $this->connection);
       return (mysql_numrows($result) > 0);
    }
    
-   
-   /**
-    * emailTaken - Returns true if the email has
-    * been taken by another user, false otherwise.
-    */
-    function emailTaken($email){
-       if(!get_magic_quotes_gpc()){
-          $email = addslashes($email);
-       }
-       $q = sprintf("SELECT email FROM ".TBL_USERS." WHERE email = '%s'",
-            mysql_real_escape_string($email));
-       $result = mysql_query($q, $this->connection);
-       return (mysql_num_rows($result) > 0);
-    }
-    
    /**
     * usernameBanned - Returns true if the username has
     * been banned by the administrator.
@@ -149,8 +132,7 @@ class MySQLDB
       if(!get_magic_quotes_gpc()){
          $username = addslashes($username);
       }
-      $q = sprintf("SELECT username FROM ".TBL_BANNED_USERS." WHERE username = '%s'",
-            mysql_real_escape_string($username));
+      $q = "SELECT username FROM ".TBL_BANNED_USERS." WHERE username = '$username'";
       $result = mysql_query($q, $this->connection);
       return (mysql_numrows($result) > 0);
    }
@@ -160,7 +142,7 @@ class MySQLDB
     * info into the database. Appropriate user level is set.
     * Returns true on success, false otherwise.
     */
-   function addNewUser($username, $password, $email, $userid, $name){
+   function addNewUser($username, $password, $email){
       $time = time();
       /* If admin sign up, give admin user level */
       if(strcasecmp($username, ADMIN_NAME) == 0){
@@ -168,13 +150,7 @@ class MySQLDB
       }else{
          $ulevel = USER_LEVEL;
       }
-       $q = sprintf("INSERT INTO ".TBL_USERS." VALUES ('%s', '%s', '%s', '%s', '%s', $time, '0', '%s', '0', '0')",
-            mysql_real_escape_string($username),
-            mysql_real_escape_string($password),
-            mysql_real_escape_string($userid),
-            mysql_real_escape_string($ulevel),
-            mysql_real_escape_string($email),
-            mysql_real_escape_string($name));
+      $q = "INSERT INTO ".TBL_USERS." VALUES ('$username', '$password', '0', $ulevel, '$email', $time)";
       return mysql_query($q, $this->connection);
    }
    
@@ -183,10 +159,7 @@ class MySQLDB
     * parameter, in the user's row of the database.
     */
    function updateUserField($username, $field, $value){
-      $q = sprintf("UPDATE ".TBL_USERS." SET %s = '%s' WHERE username = '%s'",
-            mysql_real_escape_string($field),
-            mysql_real_escape_string($value),
-            mysql_real_escape_string($username));
+      $q = "UPDATE ".TBL_USERS." SET ".$field." = '$value' WHERE username = '$username'";
       return mysql_query($q, $this->connection);
    }
    
@@ -196,8 +169,7 @@ class MySQLDB
     * the given username. If query fails, NULL is returned.
     */
    function getUserInfo($username){
-      $q = sprintf("SELECT * FROM ".TBL_USERS." WHERE username = '%s'",
-            mysql_real_escape_string($username));
+      $q = "SELECT * FROM ".TBL_USERS." WHERE username = '$username'";
       $result = mysql_query($q, $this->connection);
       /* Error occurred, return given name by default */
       if(!$result || (mysql_numrows($result) < 1)){
@@ -206,17 +178,6 @@ class MySQLDB
       /* Return result array */
       $dbarray = mysql_fetch_array($result);
       return $dbarray;
-   }
-   
-   function getUserInfoFromHash($hash){
-   		$q = sprintf("SELECT * FROM ".TBL_USERS." WHERE hash = '%s'",
-   				mysql_real_escape_string($hash));
-   		$result = mysql_query($q, $this->connection);
-   		if(!$result || (mysql_num_rows($result) < 1)){
-   			return NULL;
-   		}
-   		$dbarray = mysql_fetch_array($result);
-   		return $dbarray;
    }
    
    /**
@@ -264,15 +225,11 @@ class MySQLDB
     * active users, or updates timestamp if already there.
     */
    function addActiveUser($username, $time){
-      $q = sprintf("UPDATE ".TBL_USERS." SET timestamp = '%s' WHERE username = '%s'",
-            mysql_real_escape_string($time),
-            mysql_real_escape_string($username));
+      $q = "UPDATE ".TBL_USERS." SET timestamp = '$time' WHERE username = '$username'";
       mysql_query($q, $this->connection);
       
       if(!TRACK_VISITORS) return;
-      $q = sprintf("REPLACE INTO ".TBL_ACTIVE_USERS." VALUES ('%s', '%s')",
-            mysql_real_escape_string($username),
-            mysql_real_escape_string($time));
+      $q = "REPLACE INTO ".TBL_ACTIVE_USERS." VALUES ('$username', '$time')";
       mysql_query($q, $this->connection);
       $this->calcNumActiveUsers();
    }
@@ -280,9 +237,7 @@ class MySQLDB
    /* addActiveGuest - Adds guest to active guests table */
    function addActiveGuest($ip, $time){
       if(!TRACK_VISITORS) return;
-      $q = sprintf("REPLACE INTO ".TBL_ACTIVE_GUESTS." VALUES ('%s', '%s')",
-            mysql_real_escape_string($ip),
-            mysql_real_escape_string($time));
+      $q = "REPLACE INTO ".TBL_ACTIVE_GUESTS." VALUES ('$ip', '$time')";
       mysql_query($q, $this->connection);
       $this->calcNumActiveGuests();
    }
@@ -292,8 +247,7 @@ class MySQLDB
    /* removeActiveUser */
    function removeActiveUser($username){
       if(!TRACK_VISITORS) return;
-      $q = sprintf("DELETE FROM ".TBL_ACTIVE_USERS." WHERE username = '%s'",
-            mysql_real_escape_string($username));
+      $q = "DELETE FROM ".TBL_ACTIVE_USERS." WHERE username = '$username'";
       mysql_query($q, $this->connection);
       $this->calcNumActiveUsers();
    }
@@ -301,8 +255,7 @@ class MySQLDB
    /* removeActiveGuest */
    function removeActiveGuest($ip){
       if(!TRACK_VISITORS) return;
-      $q = sprintf("DELETE FROM ".TBL_ACTIVE_GUESTS." WHERE ip = '$ip'",
-            mysql_real_escape_string($ip));
+      $q = "DELETE FROM ".TBL_ACTIVE_GUESTS." WHERE ip = '$ip'";
       mysql_query($q, $this->connection);
       $this->calcNumActiveGuests();
    }
@@ -311,8 +264,7 @@ class MySQLDB
    function removeInactiveUsers(){
       if(!TRACK_VISITORS) return;
       $timeout = time()-USER_TIMEOUT*60;
-      $q = sprintf("DELETE FROM ".TBL_ACTIVE_USERS." WHERE timestamp < %s", 
-            mysql_real_escape_string($timeout));
+      $q = "DELETE FROM ".TBL_ACTIVE_USERS." WHERE timestamp < $timeout";
       mysql_query($q, $this->connection);
       $this->calcNumActiveUsers();
    }
@@ -321,8 +273,7 @@ class MySQLDB
    function removeInactiveGuests(){
       if(!TRACK_VISITORS) return;
       $timeout = time()-GUEST_TIMEOUT*60;
-      $q = sprintf("DELETE FROM ".TBL_ACTIVE_GUESTS." WHERE timestamp < %s",
-            mysql_real_escape_string($timeout));
+      $q = "DELETE FROM ".TBL_ACTIVE_GUESTS." WHERE timestamp < $timeout";
       mysql_query($q, $this->connection);
       $this->calcNumActiveGuests();
    }
