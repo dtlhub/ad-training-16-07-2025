@@ -45,7 +45,7 @@ class Checker(BaseChecker):
         self.mch.login(session, username, password, Status.MUMBLE)
         self.mch.put_publication(session, flag)
 
-        self.cquit(Status.OK, note_name_public, f'{username}:{password}:{flag}')
+        self.cquit(Status.OK, f'{username}:{password}:{flag}', f'{username}:{password}:{flag}')
 
     def get(self, flag_id: str, flag: str, vuln: str):
         s = get_initialized_session()
