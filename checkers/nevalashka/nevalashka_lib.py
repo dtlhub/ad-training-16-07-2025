@@ -28,7 +28,7 @@ class CheckMachine:
         log_data = {
             "user": username,
             "pass": password,
-            "subjoin": 1
+            "sublogin": 1
             }
 
         session.post(f'{self.url}/process.php', data=log_data)
@@ -38,9 +38,9 @@ class CheckMachine:
 
         response = session.post(url, data={
             "pubtext": pub_text
-        })
+        }, allow_redirects=False)
 
-        data = resp.headers['Location'].split('fnPubilcation=')[1]
+        data = response.headers['Location'].split('fnPubilcation=')[1]
         self.c.assert_eq(len(data), 36, "Invalid filename length")
 
     def get_publication(self, session: requests.Session, pub_text: str, status: Status) -> str:
@@ -55,6 +55,6 @@ class CheckMachine:
 
         response = session.get(url + response.text)
 
-        self.c.assert_eq(response.text, str, "Can't get publication", status)
+        self.c.assert_eq(type(response.text), str, "Can't get publication", status)
 
         return response.text
