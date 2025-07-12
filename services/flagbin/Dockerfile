@@ -6,5 +6,5 @@ WORKDIR /
 
 COPY flagbin .
 
-CMD ["sh", "-c", "mkdir -p /tmp/flags && socat tcp-l:52420,fork,reuseaddr exec:./flagbin"]
+CMD ["sh", "-c", "socat tcp-l:52420,fork,reuseaddr exec:./flagbin"]
 

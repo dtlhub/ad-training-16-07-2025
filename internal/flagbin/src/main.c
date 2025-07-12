@@ -10,11 +10,10 @@
 
 
 void store_flag() {
-    uint64_t flag_id = random();
+    uint64_t flag_id = random() << 32 | random();
 
-    char flag_id_str[9];
-    sprintf(flag_id_str, "%08llx", flag_id);
-
+    char flag_id_str[17];
+    sprintf(flag_id_str, "%016llx", flag_id);
 
     char flag[4096];
     printf("Flag: ");
@@ -57,8 +56,8 @@ void retrieve_flag() {
 
 void list_available_flags() {
     char *flags = flagsdb_get_existing() + 5;
-    for (int i = 0; flags[i]; i += 9)
-        printf("%.3s*****\n", flags + i);
+    for (int i = 0; flags[i]; i += 17)
+        printf("%.4s************\n", flags + i);
 }
 
 

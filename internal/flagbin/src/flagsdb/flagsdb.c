@@ -58,5 +58,3 @@ int flagsdb_retrieve(char *id, uint64_t offset, uint64_t size, char *buf) {
     return 0;
 }
 
-
-

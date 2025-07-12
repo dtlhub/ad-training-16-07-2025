@@ -77,7 +77,7 @@ while True:
 
     print(res.encode())
     flag_ids.append(res[:-1])
-    i += 9
+    i += 17
 
 if len(flag_ids) <= 0:
     print('[-] Couldnt find any flag ids')
@@ -88,6 +88,4 @@ print('[+] Got flag ids: ', flag_ids)
 print('[*] Reading flags')
 for i in flag_ids:
     print(flag_retrieve(i, 0))
-
-
 

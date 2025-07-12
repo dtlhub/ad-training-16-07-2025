@@ -25,10 +25,10 @@ class Checker(BaseChecker):
         self.mch.connect()
 
         flag_id = self.mch.store_flag(flag)
-        self.assert_in(f'{flag_id[:3]}*****', self.mch.list_flags(), Status.CORRUPT)
+        self.assert_in(f'{flag_id[:4]}************', self.mch.list_flags(), Status.CORRUPT)
 
         self.mch.disconnect()
-        self.cquit(Status.OK, f'{flag_id[:3]}*****', flag_id)
+        self.cquit(Status.OK, f'{flag_id[:4]}************', flag_id)
 
     def get(self, flag_id: str, flag: str, vuln: str):
         self.mch.connect()
