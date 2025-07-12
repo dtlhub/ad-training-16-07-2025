@@ -6,4 +6,4 @@ WORKDIR /
 
 COPY battlebots .
 
-CMD ["sh", "-c", "mkdir -p /tmp/chats && socat tcp-l:55555,fork,reuseaddr exec:./battlebots"]
+CMD ["sh", "-c", "socat tcp-l:55555,fork,reuseaddr exec:./battlebots"]
