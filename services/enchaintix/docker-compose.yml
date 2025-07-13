@@ -1,0 +1,39 @@
+
+services:
+  db:
+    restart: unless-stopped
+    image: postgres:16
+    environment:
+      POSTGRES_USER: enchaintix_user
+      POSTGRES_PASSWORD: pg_password
+      POSTGRES_DB: enchaintix_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U enchaintix_user -d enchaintix_db -U enchaintix_user"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  
+  web:
+    restart: unless-stopped
+    build: .
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=db
+      - DB_LOGIN=enchaintix_user
+      - DB_PASS=pg_password
+      - DB_NAME=enchaintix_db
+      - SUPPORT_HOST="localhost:1234"
+    pids_limit: 256
+    mem_limit: 256M
+    cpus: 2
+    ports:
+      - 5281:5281
+
+volumes:
+  postgres_data:
+  
