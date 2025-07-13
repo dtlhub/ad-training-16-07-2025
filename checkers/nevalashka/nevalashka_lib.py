@@ -43,17 +43,21 @@ class CheckMachine:
         data = response.headers['Location'].split('fnPubilcation=')[1]
         self.c.assert_eq(len(data), 36, "Invalid filename length")
 
-    def get_publication(self, session: requests.Session, pub_text: str, status: Status) -> str:
-        url = f'{self.url}/receipts/'
-        url_filename = f'{self.url}/getFilename.php'
+    def get_filename(self, session: requests.Session, pub_text: str):
+         url_filename = f'{self.url}/getFilename.php'
 
-        response = session.post(url_filename, data={
+         response = session.post(url_filename, data={
             "pubtext": pub_text
-        })
+         })
 
-        self.c.assert_eq(len(response.text), 36, "Invalid filename length")
+         self.c.assert_eq(len(response.text), 36, "Invalid filename length")
 
-        response = session.get(url + response.text)
+         return response.text
+
+    def get_publication(self, session: requests.Session, filename: str, status: Status) -> str:
+        url = f'{self.url}/receipts/'
+
+        response = session.get(url + filename)
 
         self.c.assert_eq(type(response.text), str, "Can't get publication", status)
 

@@ -9,7 +9,7 @@ from nevalashka_lib import *
 
 class Checker(BaseChecker):
     vulns: int = 1
-    timeout: int = 5
+    timeout: int = 15
     uses_attack_data: bool = False
 
     def __init__(self, *args, **kwargs):
@@ -45,14 +45,16 @@ class Checker(BaseChecker):
         self.mch.login(session, username, password, Status.MUMBLE)
         self.mch.put_publication(session, flag)
 
-        self.cquit(Status.OK, f'{username}:{password}:{flag}', f'{username}:{password}:{flag}')
+        filename = self.mch.get_filename(session, flag)
+
+        self.cquit(Status.OK, f'{filename[4:]}', f'{username}:{password}:{filename}')
 
     def get(self, flag_id: str, flag: str, vuln: str):
         s = get_initialized_session()
-        username, password, flag = flag_id.split(':')
+        username, password, filename = flag_id.split(':')
 
         self.mch.login(s, username, password, Status.CORRUPT)
-        value = self.mch.get_publication(s, flag, Status.CORRUPT)
+        value = self.mch.get_publication(s, filename, Status.CORRUPT)
 
         self.assert_eq(value, flag, "Publication is invalid", Status.CORRUPT)
 
