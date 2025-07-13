@@ -15,4 +15,10 @@ RUN apt-get update && apt-get install -y zlib1g-dev libicu-dev g++ libmcrypt-dev
 RUN apt-get update \
     &&  docker-php-ext-install mbstring pdo_mysql mcrypt mysqli
 
+USER root
+
 COPY src/ /var/www/html/
+
+RUN usermod -u 1000 www-data
+
+COPY docker-php-entrypoint /usr/local/bin/

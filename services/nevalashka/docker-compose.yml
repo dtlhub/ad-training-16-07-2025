@@ -6,12 +6,14 @@ services:
     mem_limit: 64M
     cpus: 0.5
     volumes:
-      - ./src:/var/www/html/
       - ./receipts:/var/www/html/receipts
     ports:
       - 7000:80
     depends_on:
       - db
+    environment:
+      - APACHE_RUN_USER=root
+      - APACHE_RUN_GROUP=root
 
   db:
     image: mariadb:10.6-jammy
