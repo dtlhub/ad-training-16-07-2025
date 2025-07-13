@@ -19,6 +19,6 @@ USER root
 
 COPY src/ /var/www/html/
 
-RUN usermod -u 1000 www-data
+RUN usermod -u 1001 www-data
 
 COPY docker-php-entrypoint /usr/local/bin/
