@@ -53,7 +53,6 @@ class Checker(BaseChecker):
     def get(self, flag_id: str, flag: str, vuln: str):
         s = get_initialized_session()
         username, password, filename = flag_id.split(':')
-        print(flag_id)
 
         self.mch.login(s, username, password, Status.CORRUPT)
         value = self.mch.get_publication(s, filename, Status.CORRUPT)

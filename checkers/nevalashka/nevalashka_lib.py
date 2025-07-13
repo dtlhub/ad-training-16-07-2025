@@ -40,8 +40,6 @@ class CheckMachine:
             "pubtext": pub_text
         }, allow_redirects=False)
 
-        print(response.text)
-
         data = response.headers['Location'].split('fnPubilcation=')[1]
         self.c.assert_eq(len(data), 36, "Invalid filename length")
 
