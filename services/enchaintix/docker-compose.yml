@@ -29,11 +29,10 @@ services:
       - DB_NAME=enchaintix_db
       - SUPPORT_HOST=localhost:1234
     mem_limit: 256M
-    deploy:
-      resources:
-        limits:
-          memory: 256M
-          # CPUs are not supported under `deploy` unless using swarm mode
+    pids_limit: 256
+    mem_limit: 256M
+    cpus: 2
+    
     ports:
       - "5281:5281"
 
