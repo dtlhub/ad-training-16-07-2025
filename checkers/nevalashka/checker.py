@@ -10,7 +10,7 @@ from nevalashka_lib import *
 class Checker(BaseChecker):
     vulns: int = 1
     timeout: int = 15
-    uses_attack_data: bool = False
+    uses_attack_data: bool = True
 
     def __init__(self, *args, **kwargs):
         super(Checker, self).__init__(*args, **kwargs)
@@ -31,7 +31,8 @@ class Checker(BaseChecker):
         self.mch.register(session, username, password)
         self.mch.login(session, username, password, Status.MUMBLE)
         self.mch.put_publication(session, pub_text)
-        value = self.mch.get_publication(session, pub_text, Status.MUMBLE)
+        filename = self.mch.get_filename(session, pub_text)
+        value = self.mch.get_publication(session, filename, Status.MUMBLE)
 
         self.assert_eq(value, pub_text, "Publication text is invalid")
 
@@ -52,6 +53,7 @@ class Checker(BaseChecker):
     def get(self, flag_id: str, flag: str, vuln: str):
         s = get_initialized_session()
         username, password, filename = flag_id.split(':')
+        print(flag_id)
 
         self.mch.login(s, username, password, Status.CORRUPT)
         value = self.mch.get_publication(s, filename, Status.CORRUPT)
