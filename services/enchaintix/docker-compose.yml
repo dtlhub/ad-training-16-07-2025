@@ -28,11 +28,10 @@ services:
       - DB_PASS=pg_password
       - DB_NAME=enchaintix_db
       - SUPPORT_HOST=localhost:1234
-    mem_limit: 256M
     pids_limit: 256
     mem_limit: 256M
     cpus: 2
-    
+
     ports:
       - "5281:5281"
 
