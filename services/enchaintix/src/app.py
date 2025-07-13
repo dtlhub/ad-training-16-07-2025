@@ -69,9 +69,13 @@ def forgot_password():
 @login_required
 def battle():
     response = {'status': 'unknown', 'earned_exp': 0, 'enemy': None, 'loot': None}
-    challenger = db.session.query(Character).filter_by(id=session['selected_character_id']).first()
-    if not challenger:
+    try:
+        challenger = db.session.query(Character).filter_by(id=session['selected_character_id']).first()
+        if not challenger:
+            return response
+    except:
         return response
+
     if request.form.get('type') == 'pvp':
         enemy = db.session.query(Character).order_by(db.func.random()).limit(1).first()
         if not enemy or enemy.id == challenger.id:
@@ -83,10 +87,11 @@ def battle():
         response['earned_exp'] = pow(1.83, difficulty) * 3
 
         if random() > 0.6 and challenger.type == 'Melee':
-            loot = sample(enemy.inventory, 1)[0]
-            response['loot'] = WEAPONS[loot]['name']
-            challenger.inventory.append(loot)
-            enemy.inventory.remove(loot)
+            if enemy.type == 'Melee' and len(enemy.inventory) > 0:
+                loot = sample(enemy.inventory, 1)[0]
+                response['loot'] = WEAPONS[loot]['name']
+                challenger.inventory.append(loot)
+                enemy.inventory.remove(loot)
 
         if result:
             enemy.loses += 1
@@ -111,8 +116,8 @@ def battle():
     else:
         response['status'] = 'lose'
         response['earned_exp'] *= 0.1
-
-    challenger.xp += int(response['earned_exp'])
+    if get_level_from_xp(challenger.xp) < 9:
+        challenger.xp += int(response['earned_exp'])
     db.session.commit()
 
     return jsonify(response)
@@ -126,13 +131,13 @@ def get_characters():
 @app.route('/api/user/<name>', methods=['GET'])
 @login_required
 def get_user(name): 
-    json = model_to_dict(Userdb.query.filter_by(name=name).first())
-    if current_user.get_id() != json['id']:
+    json = model_to_dict(Userdb.query.filter_by(username=name).first())
+    if current_user.get_id() != str(json['id']):
         json['password']      = 'REDACTED'
         json['secret_answer'] = 'REDACTED'
     return jsonify(json)
 
-@app.route('/api/charcter/<id>', methods=['GET'])
+@app.route('/api/character/<id>', methods=['GET'])
 @login_required
 def get_character(id):
     return jsonify(model_to_dict(Character.query.filter_by(id=uuid.UUID(id)).first()))
@@ -222,4 +227,4 @@ def add_character():
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    app.run(debug=True, port=5281)
+    app.run(debug=True, port=5281, host='0.0.0.0')

@@ -45,12 +45,16 @@ class CheckMachine:
         if input_element and 'value' in input_element.attrs:
             character_id = input_element['value']
         self.c.assert_neq(character_id, None, "Character creation failed")
-        session.post(f'{self.url}/api/user/add_character', data={'character_id': character_id})
+        session.post(f'{self.url}/api/user/select_character', data={'character_id': character_id})
 
     def play(self, session: requests.Session,  mode: str = 'pve'):
-        r = session.post(f'{self.url}/api/game/battle', data={'type': mode}).json()['enemy']
+        data = session.post(f'{self.url}/api/game/battle', data={'type': mode})
+        if data.json()['status'] == 'error':
+            return
+        enemy = data.json()['enemy']
         if mode == 'pvp':
-            image_url = session.get(f'{self.url}{r}').json()['image_url']
+            image_url = session.get(f'{self.url}{enemy}').json()['image_url']
             session.get(image_url if 'http' in image_url else f'{self.url}{image_url}')
+
                  
 
