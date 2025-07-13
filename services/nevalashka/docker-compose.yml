@@ -19,7 +19,7 @@ services:
     image: mariadb:10.6-jammy
     restart: unless-stopped
     volumes:
-      - "./db_data:/var/lib/mysql"
+#      - "./db_data:/var/lib/mysql"
       - "./dbtables.sql:/docker-entrypoint-initdb.d/dbtables.sql"
     environment:
       MARIADB_ROOT_PASSWORD: ae0r87gh8a7werfh078hawefg
