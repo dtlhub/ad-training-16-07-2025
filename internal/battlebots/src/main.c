@@ -46,12 +46,26 @@ void edit_battlebot(int id) {
 
 
     BattleBot *pbot = battlebots + id;
+    int res;
+
     printf("HP > ");
-    pbot->hp = read_int();
+    res = read_int();
+    if (res > 0xffff) {}
+    pbot->hp = res;
+
     printf("SHD > ");
-    pbot->shd = read_int();
+    res = read_int();
+    if (res > 0xffff)
+        puts("SHD cant be more than 0xffff in free version.");
+    else
+        pbot->shd = res;
+
     printf("ATK > ");
-    pbot->atk = read_int();
+    res = read_int();
+    if (res > 0xffff)
+        puts("ATK cant be more than 0xffff in free version.");
+    else
+        pbot->atk = res;
 }
 
 void battle() {
@@ -134,6 +148,9 @@ void alarm_handler(int sig) {
 
 
 void init() {
+    fputc(' ', stdout);
+    putc(' ', stdout);
+
     unsigned seed;
     getrandom(&seed, sizeof(seed), 0);
     srandom(seed);
@@ -186,7 +203,8 @@ int menu() {
 
 int main() {
     init();
-    puts("   █████                █████     █████    ████           █████               █████           \n"
+    puts("\n"
+         "   █████                █████     █████    ████           █████               █████           \n"
          "  ░░███                ░░███     ░░███    ░░███          ░░███               ░░███            \n"
          "   ░███████   ██████   ███████   ███████   ░███   ██████  ░███████   ██████  ███████    █████ \n"
          "   ░███░░███ ░░░░░███ ░░░███░   ░░░███░    ░███  ███░░███ ░███░░███ ███░░███░░░███░    ███░░  \n"
