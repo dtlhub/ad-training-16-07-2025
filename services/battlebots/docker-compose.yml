@@ -1,0 +1,36 @@
+services:
+  battlebots:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "55555:55555"
+
+    read_only: true
+    volumes:
+      - ./chats:/tmp/chats
+
+    pids_limit: 1024
+    mem_limit: 512M
+    cpus: 1
+
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+
+    restart: unless-stopped
+
+
+  cleaner:
+    image: c4tbuts4d/dedcleaner:latest
+
+    volumes:
+      - ./chats:/chats
+
+    environment:
+      - DELETE_AFTER=10m
+      - SLEEP=5m
+      - DIRS=/chats
+
+    restart: unless-stopped

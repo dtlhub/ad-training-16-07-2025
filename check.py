@@ -20,6 +20,9 @@ from typing import List, Tuple
 import yaml
 from dockerfile_parse import DockerfileParser
 
+import warnings
+warnings.filterwarnings("ignore", category=DeprecationWarning, message=".*datetime.datetime.utcnow.*")
+
 BASE_DIR = Path(__file__).resolve().absolute().parent
 SERVICES_PATH = BASE_DIR / "services"
 CHECKERS_PATH = BASE_DIR / "checkers"
@@ -48,6 +51,11 @@ CONTAINER_ALLOWED_OPTIONS = CONTAINER_REQUIRED_OPTIONS + [
     "sysctls",
     "privileged",
     "security_opt",
+
+    "read_only",
+    "tmpfs",
+    "cap_drop",
+    "user",
 ]
 SERVICE_REQUIRED_OPTIONS = ["pids_limit", "mem_limit", "cpus"]
 SERVICE_ALLOWED_OPTIONS = CONTAINER_ALLOWED_OPTIONS
