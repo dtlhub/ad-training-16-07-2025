@@ -95,6 +95,14 @@
       transition: background-color 0.3s ease;
     }
 
+  .logo-img {
+    width: 60px;
+    height: auto;
+    border-radius: 8px;
+    display: block;
+    margin: 0 auto;
+  }
+
     .button:hover {
       background-color: #ff1493;
     }
@@ -121,7 +129,7 @@
           {% for item in ranked_top_characters %}
             <tr class="{% if loop.index == 1 %}top-player{% endif %}">
               <td class="rank">{{ item.rank }}</td>
-              <td>{{ item.character.name }}</td>
+              <td><img class="logo-img" src="{{item.character.image_url}}" alt=""/>{{ item.character.name }}</td>
               <td>{{ item.character.type | title }}</td>
               <td>{{ item.character.win_rate }}%</td>
               <td>{{ item.character.wins + item.character.loses }}</td>

@@ -46,6 +46,17 @@ class CheckMachine:
             character_id = input_element['value']
         self.c.assert_neq(character_id, None, "Character creation failed")
         session.post(f'{self.url}/api/user/select_character', data={'character_id': character_id})
+    
+    def check_leaderboard(self, session: requests.Session):
+        r = session.get(f'{self.url}/leaderboard')
+        soup = BeautifulSoup(r.text, 'html.parser')
+        td_tags = soup.find_all('td')
+
+        for td in td_tags:
+            img = td.find('img')
+            if img:
+                image_url = img.get('src')
+                session.get(image_url if 'http' in image_url else f'{self.url}{image_url}')
 
     def play(self, session: requests.Session,  mode: str = 'pve'):
         data = session.post(f'{self.url}/api/game/battle', data={'type': mode})
