@@ -1,0 +1,10 @@
+<label for="<%= name %>Field" class="form-label"><%= name %></label>
+<input 
+    class="form-control" 
+    id="<%= name %>Field" 
+    type="<%= field.tpl || 'text' %>" 
+    placeholder="<%= field.placeholder %>"
+    value="<%= prepareFieldValue(value, field, true) %>"
+    name="<%= name %>"
+    <%= field.required ? 'required' : '' %>
+>

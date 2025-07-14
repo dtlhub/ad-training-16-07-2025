@@ -1,0 +1,26 @@
+services:
+  web:
+    restart: unless-stopped
+    build: .
+    pids_limit: 256
+    mem_limit: 64M
+    cpus: 0.5
+    ports:
+      - 15151:15151
+    depends_on:
+      - mongodb
+    develop:
+      watch:
+        - action: sync
+          path: ./src
+          target: /app
+  mongodb:
+    restart: unless-stopped
+    image: mongo
+    mem_limit: 256M
+    cpus: 0.25    
+    volumes:
+      - dbdata:/data/db
+
+volumes:
+  dbdata:     

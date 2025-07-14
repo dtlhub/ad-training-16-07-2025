@@ -1,0 +1,8 @@
+<label for="<%= name %>Field" class="form-label"><%= name %></label>
+<textarea 
+    class="form-control" 
+    id="<%= name %>Field" 
+    placeholder="<%= field.placeholder %>"
+    name="<%= name %>"
+    <%= field.required ? 'required' : '' %>
+><%= value %></textarea>

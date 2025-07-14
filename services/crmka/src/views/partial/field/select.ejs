@@ -1,0 +1,14 @@
+<label for="<%= name %>Field" class="form-label"><%= name %></label>
+<select 
+    id="<%= name %>Field"
+    class="form-select" 
+    name="<%= name %>"
+    <%= field.required ? 'required' : '' %>
+>
+    <% field.enum.forEach(option => {%>
+        <option 
+            value="<%= option %>"
+            <%= value === option ? 'selected' : '' %>
+        ><%= option %></option>
+    <% }) %>
+</select> 

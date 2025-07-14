@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('partial/header', {title: 'Error'}); -%>    
+</head>
+<body>
+    <h1>Error</h1>
+    <div class="alert alert-danger">
+        <p><%= error %></p>
+        <p><b>Stack:</b><%= stack %></p>
+    </div>
+    <a href="/">Go back to Home</a>
+</body>
+</html>
