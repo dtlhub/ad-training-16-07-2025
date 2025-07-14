@@ -97,6 +97,7 @@
       transition: background-color 0.3s ease;
     }
 
+<<<<<<< Updated upstream
     .logo-img {
       width: 60px;
       height: auto;
@@ -104,6 +105,15 @@
       display: block;
       margin: 0 auto;
     }
+=======
+  .logo-img {
+    width: 60px;
+    height: auto;
+    border-radius: 8px;
+    display: block;
+    margin: 0 auto;
+  }
+>>>>>>> Stashed changes
 
     .button:hover {
       background-color: #ff1493;
@@ -138,6 +148,7 @@
         <tbody>
           {% for char in all_chars %}
             <tr class="{% if loop.index == 1 %}top-player{% endif %}">
+<<<<<<< Updated upstream
               <td class="rank">{{ loop.index }}</td>
               <td><img class="logo-img" src="{{ char.image_url }}" alt="">{{ char.name }}</td>
               <td>{{ char.type | title }}</td>
@@ -145,6 +156,14 @@
               <td>{{ char.wins }}</td>
               <td>{{ char.xp }}</td>
               <td>{{ char.owner }}</td>
+=======
+              <td class="rank">{{ item.rank }}</td>
+              <td><img class="logo-img" src="{{item.character.image_url}}" alt=""/>{{ item.character.name }}</td>
+              <td>{{ item.character.type | title }}</td>
+              <td>{{ item.character.win_rate }}%</td>
+              <td>{{ item.character.wins + item.character.loses }}</td>
+              <td>{{ item.character.owner }}</td>
+>>>>>>> Stashed changes
             </tr>
           {% endfor %}
         </tbody>
