@@ -56,20 +56,18 @@ class CheckMachine:
             img = td.find('img')
             if img:
                 image_url = img.get('src')
-                session.get(image_url if 'http' in image_url else f'{self.url}{image_url}')
+                if image_url:
+                    session.get(image_url if 'http' in image_url else f'{self.url}{image_url}')
 
     def play(self, session: requests.Session,  mode: str = 'pve'):
         data = session.post(f'{self.url}/api/game/battle', data={'type': mode})
-        try:
-            if data.json()['status'] == 'error':
-                return
-        except:
-            print(data.text)
-            exit(1)
+        if data.json()['status'] == 'error' or data.json()['status'] == 'unknown':
+            return
         enemy = data.json()['enemy']
         if mode == 'pvp':
             image_url = session.get(f'{self.url}{enemy}').json()['image_url']
-            session.get(image_url if 'http' in image_url else f'{self.url}{image_url}')
+            if image_url:
+                session.get(image_url if 'http' in image_url else f'{self.url}{image_url}')
 
                  
 
