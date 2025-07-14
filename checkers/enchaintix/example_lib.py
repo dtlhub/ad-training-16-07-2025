@@ -33,7 +33,7 @@ class CheckMachine:
         return False
     
     def create_char(self, session: requests.Session, char_name: str, char_type: str, im_num: int):
-        session.post(f'{self.url}/api/user/add_character', data={'name': char_name, 'char_type':char_type, 'image_url': '/static/default_images/a{im_num}.jpg'})
+        session.post(f'{self.url}/api/user/add_character', data={'name': char_name, 'char_type':char_type, 'image_url': f'/static/default_images/a{im_num}.PNG'})
         data = session.get(f'{self.url}').text
         assert_in(char_name, data, "Character creation failed", Status.CORRUPT)
 
@@ -49,8 +49,12 @@ class CheckMachine:
 
     def play(self, session: requests.Session,  mode: str = 'pve'):
         data = session.post(f'{self.url}/api/game/battle', data={'type': mode})
-        if data.json()['status'] == 'error':
-            return
+        try:
+            if data.json()['status'] == 'error':
+                return
+        except:
+            print(data.text)
+            exit(1)
         enemy = data.json()['enemy']
         if mode == 'pvp':
             image_url = session.get(f'{self.url}{enemy}').json()['image_url']

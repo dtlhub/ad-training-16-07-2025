@@ -84,7 +84,7 @@ def battle():
         difficulty = character_result(enemy)
         result = character_result(challenger) > character_result(enemy)
         response['enemy'] = f'/api/character/{enemy.id}'
-        response['earned_exp'] = pow(1.83, difficulty) * 3
+        response['earned_exp'] = round(pow(1.83, difficulty) * 3)
 
         if random() > 0.6 and challenger.type == 'Melee':
             if enemy.type == 'Melee' and len(enemy.inventory) > 0:
@@ -115,9 +115,9 @@ def battle():
             challenger.inventory.append(WEAPONS.index(loot))
     else:
         response['status'] = 'lose'
-        response['earned_exp'] *= 0.1
+        response['earned_exp'] = round(response['earned_exp'] * 0.1)
     if get_level_from_xp(challenger.xp) < 9:
-        challenger.xp += int(response['earned_exp'])
+        challenger.xp += response['earned_exp'] % 300
     db.session.commit()
 
     return jsonify(response)
