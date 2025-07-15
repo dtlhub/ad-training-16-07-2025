@@ -1,0 +1,38 @@
+services:
+  nev-php:
+    restart: unless-stopped
+    build: .
+    pids_limit: 256
+    mem_limit: 64M
+    cpus: 0.5
+    volumes:
+      - ./receipts:/var/www/html/receipts
+    ports:
+      - 7000:80
+    depends_on:
+      - db
+    environment:
+      - APACHE_RUN_USER=root
+      - APACHE_RUN_GROUP=root
+
+  db:
+    image: mariadb:10.6-jammy
+    restart: unless-stopped
+    volumes:
+#      - "./db_data:/var/lib/mysql"
+      - "./dbtables.sql:/docker-entrypoint-initdb.d/dbtables.sql"
+    environment:
+      MARIADB_ROOT_PASSWORD: ae0r87gh8a7werfh078hawefg
+      MARIADB_DATABASE: nevalashka
+      MARIADB_USER: nevalashka
+      MARIADB_PASSWORD: 8aghsdf890ahfw98h2w3
+
+  cleaner:
+    image: c4tbuts4d/dedcleaner:latest
+    restart: unless-stopped
+    volumes:
+      - "./receipts:/receipts"
+    environment:
+      - DELETE_AFTER=30m
+      - SLEEP=30m
+      - DIRS=/receipts
