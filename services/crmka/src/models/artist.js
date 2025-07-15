@@ -1,7 +1,7 @@
 import { Schema, model } from 'mongoose';
 
 const groups = ['solo', 'duet', 'troupe'];
-const spectialization = ['clown'];
+const spectialization = ['clown', 'acrobat', 'magician'];
 
 export default model('Artist', new Schema({
     name: { type: String, unique: true, required: true },

@@ -12,7 +12,6 @@
     "jsonwebtoken": "^9.0.2",
     "express-session": "^1.18.1",
     "ejs": "^3.1.10",
-    "mongodb": "^6.17.0",
     "bcrypt": "^6.0.0",
     "mongoose": "^8.16.3"
   }

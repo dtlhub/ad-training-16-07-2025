@@ -8,8 +8,8 @@ from crmka_lib import *
 
 class Checker(BaseChecker):
     vulns: int = 1
-    timeout: int = 5
-    uses_attack_data: bool = True
+    timeout: int = 10
+    uses_attack_data: bool = False
 
     def __init__(self, *args, **kwargs):
         super(Checker, self).__init__(*args, **kwargs)
@@ -44,7 +44,7 @@ class Checker(BaseChecker):
         artist = Artist(rnd_username(10), flag)
         _id = self.mch.put_entity(session, artist)
 
-        self.cquit(Status.OK, artist.name, f'{artist.name}:{artist.model_name}:{_id}')
+        self.cquit(Status.OK, f'{artist.name}:{artist.model_name}:{_id}')
 
     def get(self, flag_id: str, flag: str, vuln: str):
         session = get_initialized_session()

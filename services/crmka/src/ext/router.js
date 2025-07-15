@@ -38,5 +38,12 @@ export function crud(model) {
                 }
                 res.redirect(`..${indexURI}`);
             });
+
+        r.route(`${indexURI}/:id/delete`)
+            .get(async (req, res) => {
+                const id = req.params.id;
+                await model.findByIdAndDelete(id);
+                res.redirect(`../..${indexURI}`);
+            })
     });
 }

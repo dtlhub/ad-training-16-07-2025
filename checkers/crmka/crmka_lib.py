@@ -20,6 +20,10 @@ def rnd_int(min, max):
     return random.randint(min, max)
 
 
+def rnd_list(_list):
+    return random.choice(_list)
+
+
 def set_jwt(session: requests.Session, account_name):
     token = jwt.encode({"account": {"name": account_name}}, PRIVATE_KEY, algorithm="RS256")
     session.headers.update({
@@ -40,8 +44,8 @@ class Entity:
 class Artist(Entity):
     name: str
     contact: str
-    group: str = 'solo'
-    spectialization: str = 'clown'
+    group: str = rnd_list(['solo', 'duet', 'troupe'])
+    spectialization: str = rnd_list(['clown', 'acrobat', 'magician'])
     fee: int = rnd_int(1, 100)
 
 class Event(Entity):

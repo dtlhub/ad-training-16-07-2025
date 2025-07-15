@@ -3,12 +3,15 @@
 <head>
     <%- include('partial/header', {title: 'Error'}); -%>    
 </head>
-<body>
-    <h1>Error</h1>
-    <div class="alert alert-danger">
-        <p><%= error %></p>
-        <p><b>Stack:</b><%= stack %></p>
-    </div>
-    <a href="/">Go back to Home</a>
+<body class="d-flex align-items-center py-4 bg-body-tertiary">
+    <main class="error-page w-100 m-auto">
+        <h1 class="h2">Error</h1>
+
+        <div class="alert alert-danger">
+            <p><%= error %></p>
+            <p><b>Stack:</b><%= stack %></p>
+        </div>
+        <a href="/">Go back to Home</a>
+    </main>
 </body>
 </html>
