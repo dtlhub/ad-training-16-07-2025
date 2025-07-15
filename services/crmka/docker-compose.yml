@@ -9,11 +9,6 @@ services:
       - 15151:15151
     depends_on:
       - mongodb
-    develop:
-      watch:
-        - action: sync
-          path: ./src
-          target: /app
   mongodb:
     restart: unless-stopped
     image: mongo
