@@ -1,0 +1,36 @@
+services:
+  flagbin:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "52420:52420"
+
+    read_only: true
+    volumes:
+      - ./flags:/tmp/flags
+
+    pids_limit: 1024
+    mem_limit: 512M
+    cpus: 1
+
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+
+    restart: unless-stopped
+
+
+  cleaner:
+    image: c4tbuts4d/dedcleaner:latest
+
+    volumes:
+      - ./flags:/flags
+
+    environment:
+      - DELETE_AFTER=10m
+      - SLEEP=5m
+      - DIRS=/flags
+
+    restart: unless-stopped
