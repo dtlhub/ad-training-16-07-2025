@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>✨ Enchaintix Magic Battle ✨</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+    }
+    body {
+      background-image: url("{{ url_for('static', filename='bg2.jpg') }}");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      color: #ff69b4;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+    .footer {
+      background-color: rgba(255, 255, 255, 0.9);
+      border: 3px dashed #ff69b4;
+      border-radius: 20px;
+      box-shadow: 0 0 30px #ff69b4;
+      padding: 10px;
+      text-align: center;
+      width: 100%;
+      max-width: 1200px;
+      margin-bottom: 20px;
+    }
+    .main-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 20px;
+      width: 100%;
+      max-width: 1200px;
+    }
+    .character-list {
+      position: relative;
+      grid-row: span 2;
+      background-color: rgba(255, 255, 255, 0.9);
+      border: 3px dashed #ff69b4;
+      border-radius: 20px;
+      box-shadow: 0 0 30px #ff69b4;
+      padding: 20px;
+      height: 600px;
+      overflow-y: auto;
+    }
+    .add-character-button {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        z-index: 10;
+    }
+    .character-card {
+  background-color: #fff;
+  border: 2px solid #ffb6c1;
+  border-radius: 15px;
+  padding: 15px;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap; /* Allows stacking on small screens */
+}
+
+.character-card img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.selected-character {
+  border: 3px solid #4CAF50;
+  box-shadow: 0 0 10px #4CAF50;
+  position: relative;
+}
+
+.selected-label {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: #4CAF50;
+  color: white;
+  padding: 4px 8px;
+  font-size: 0.8em;
+  border-radius: 5px;
+  font-weight: bold;
+  z-index: 10;
+}
+
+.card-details {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  min-width: 200px;
+  gap: 4px;
+}
+
+.card-details span {
+  font-size: 0.9em;
+  color: #333;
+}
+.char-name {
+  cursor: pointer;
+  color: #ff69b4;
+}
+.char-name:hover {
+  text-decoration: underline;
+}
+    .battle-options {
+      background-color: rgba(255, 255, 255, 0.9);
+      border: 3px dashed #ff69b4;
+      border-radius: 20px;
+      box-shadow: 0 0 30px #ff69b4;
+      padding: 20px;
+      height: 200px;
+      text-align: center;
+    }
+    .leaderboard {
+      background-color: rgba(255, 255, 255, 0.9);
+      border: 3px dashed #ff69b4;
+      border-radius: 20px;
+      box-shadow: 0 0 30px #ff69b4;
+      height: 379px;
+      padding: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      padding: 10px;
+      text-align: center;
+      border-bottom: 1px solid #ccc;
+    }
+    .button {
+      display: inline-block;
+      background-color: #ff69b4;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 1em;
+      border-radius: 25px;
+      cursor: pointer;
+      margin: 10px;
+      transition: background-color 0.3s ease;
+    }
+    .button:hover {
+      background-color: #ff1493;
+    }
+    .popup {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .popup-content {
+      background-color: white;
+      border: 3px dashed #ff69b4;
+      border-radius: 20px;
+      padding: 30px;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 0 30px #ff69b4;
+    }
+    .custom-dropdown {
+  position: relative;
+  margin-bottom: 15px;
+}
+.dropdown-selected {
+  border: 2px solid #ffb6c1;
+  border-radius: 10px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: white;
+  cursor: pointer;
+  min-height: 40px;
+}
+.dropdown-selected img {
+  margin-left: 10px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.arrow {
+  font-size: 12px;
+  color: #ff69b4;
+}
+.dropdown-options {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  max-height: 200px;
+  overflow-y: auto;
+  border: 2px solid #ffb6c1;
+  border-top: none;
+  border-radius: 0 0 10px 10px;
+  background-color: white;
+  z-index: 1000;
+  display: none;
+}
+.dropdown-option {
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+.dropdown-option img {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+.dropdown-option:hover {
+  background-color: #ffe6f0;
+}
+  </style>
+</head>
+<body>
+  <div class="footer">
+    <h2>✨ Enchaintix Magic Battle ✨</h2>
+    <a href="/logout" class="button">Logout</a>
+     <a href="/leaderboard" class="button">🏆 Leaderboard</a>
+  </div>
+  <div class="main-grid">
+    <div class="character-list">
+        <div class="add-character-button">
+            <button onclick="openModal()" class="button">+ Add Character</button>
+        </div>
+        <h2>Your Characters</h2>
+      {% if characters %}
+        {% for character in characters %}
+          <div class="character-card {% if selected_id == character.id %}selected-character{% endif %}">
+            {% if selected_id == character.id %}
+              <span class="selected-label">✅ Selected</span>
+            {% endif %}
+            <img src="{{ character.image_url }}" alt="{{ character.name }}">
+            <span class="char-name" onclick="openCharacterInfo('{{ character.id }}')">
+              <strong>{{ character.name }}</strong>
+            </span>
+            <p>Level: {{ character.lvl }}</p>
+            <p>Strength: {{ character.strength }}</p>
+            <p>Win Rate: {{ "%.2f"|format(character.win_rate) }}%</p>
+            <form action="/api/user/select_character" method="POST">
+              <input type="hidden" name="character_id" value="{{ character.id }}">
+              <button type="submit" class="button">Select for Battle</button>
+            </form>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p>No characters found. Add a new one!</p>
+      {% endif %}
+    </div>
+    <div class="battle-options">
+  <h2>Battle Options</h2>
+  <button onclick="startBattle('pve')" class="button">PvE Battle</button>
+  <button onclick="startBattle('pvp')" class="button">PvP Battle</button>
+  <div id="battle-result-modal" class="popup">
+    <div class="popup-content" style="width: 400px;">
+      <h2 id="battle-result-title"></h2>
+      <p id="battle-enemy"></p>
+      <p id="battle-xp"></p>
+      <p id="battle-loot"></p>
+      <button onclick="closeResultModal()" class="button">Close</button>
+    </div>
+  </div>
+</div>
+    <div class="leaderboard">
+      <h2>Leaderboard</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>No.</th>
+            <th>Character Name</th>
+            <th>Win Rate</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in ranked_top_characters %}
+            <tr>
+              <td>{{ item.rank }}</td>
+              <td>{{ item.character.name }}</td>
+              <td>{{ item.character.win_rate }}%</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div id="add-character-modal" class="popup">
+  <div class="popup-content">
+    <h2>Add New Character</h2>
+    <form action="/api/user/add_character" method="POST">
+      <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 15px;">
+        <input type="text" name="name" placeholder="Character Name" required style="   width: 100%;   padding: 10px;   font-size: 1em;   border-radius: 10px;   border: 2px solid #ffb6c1;   outline: none;   transition: border-color 0.3s ease; "/>
+        <input type="hidden" name="image_url" id="selected-image-url" required />
+        <div class="custom-dropdown" style="width: 120px;">
+          <div class="dropdown-selected" onclick="toggleDropdown()" style="cursor: pointer; text-align: center;">
+            <img id="dropdown-image" src="" alt="Select Image" width="40" height="40" style="border-radius: 50%; display: none;" />
+            <span id="dropdown-label" style="display: inline-block; line-height: 40px;">🖼️</span>
+            <div class="arrow" style="font-size: 10px; color: #ff69b4; text-align: right;">▼</div>
+          </div>
+          <div class="dropdown-options" id="dropdown-options" style="position: absolute; z-index: 1000; max-height: 200px; overflow-y: auto; border: 2px solid #ffb6c1; background-color: white; display: none;">
+            {% for image in default_images %}
+              <div class="dropdown-option" onclick="selectImage('{{ image }}', this)">
+                <img src="{{ image }}" alt="Char" width="40" height="40" style="border-radius: 50%; object-fit: cover;" />
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      <div style="margin-bottom: 15px;">
+        <select name="char_type" required style="width: 100%; padding: 10px; font-size: 1em; border-radius: 10px; border: 2px solid #ffb6c1;">
+          <option value="">Select Character Type</option>
+          <option value="Melee">⚔️ Melee</option>
+          <option value="Magic">🔮 Magic</option>
+        </select>
+      </div>
+      <button type="submit" class="button">Add Character</button>
+    </form>
+    <button onclick="closeModal()" class="button">Close</button>
+  </div>
+</div>
+<div id="character-info-modal" class="popup">
+  <div class="popup-content" style="width: 400px;">
+    <h2 id="char-info-title">Character Info</h2>
+    <div id="char-info-content" style="text-align: left;">
+    </div>
+    <button onclick="closeCharacterInfoModal()" class="button">Close</button>
+  </div>
+</div>
+  <script>
+    function openModal() {
+      document.getElementById("add-character-modal").style.display = "flex";
+    }
+    function closeModal() {
+      document.getElementById("add-character-modal").style.display = "none";
+    }
+    window.onclick = function(event) {
+      const modal = document.getElementById("add-character-modal");
+      if (event.target === modal) {
+        closeModal();
+      }
+    };
+  </script>
+<script>
+  function toggleDropdown() {
+    const dropdown = document.getElementById("dropdown-options");
+    dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+  }
+  function selectImage(url, element) {
+    const label = document.getElementById("dropdown-label");
+    const imagePreview = document.getElementById("dropdown-image");
+    const hiddenInput = document.getElementById("selected-image-url");
+    label.style.display = "none";
+    imagePreview.src = url;
+    imagePreview.style.display = "inline-block";
+    hiddenInput.value = url;
+    document.getElementById("dropdown-options").style.display = "none";
+  }
+  window.addEventListener('click', function(e) {
+    const dropdown = document.getElementById("dropdown-options");
+    const dropdownContainer = document.querySelector(".custom-dropdown");
+    if (!dropdownContainer.contains(e.target)) {
+      dropdown.style.display = "none";
+    }
+  });
+  function closeModal() {
+    document.getElementById("add-character-modal").style.display = "none";
+  }
+</script>
+<script>
+  function startBattle(type) {
+    fetch('/api/game/battle', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: `type=${type}`
+    })
+    .then(res => res.json())
+    .then(data => {
+      const modal = document.getElementById("battle-result-modal");
+      const title = document.getElementById("battle-result-title");
+      const enemy = document.getElementById("battle-enemy");
+      const xp = document.getElementById("battle-xp");
+      const loot = document.getElementById("battle-loot");
+      if (data.status === "win") {
+        title.textContent = "🎉 You Won!";
+        title.style.color = "#32CD32";
+      } else if (data.status === "lose") {
+        title.textContent = "💀 You Lost!";
+        title.style.color = "#FF6347";
+      } else {
+        title.textContent = "⚠️ Error";
+        title.style.color = "#FFA500";
+      }
+      enemy.textContent = `Enemy: ${data.enemy}`;
+      xp.textContent = `XP Earned: ${Math.floor(data.earned_exp)}`;
+      loot.textContent = data.loot ? `Loot: ${data.loot}` : "";
+      modal.style.display = "flex";
+    });
+  }
+  function closeResultModal() {
+    document.getElementById("battle-result-modal").style.display = "none";
+    location.reload();
+  }
+</script>
+<script>
+function openCharacterInfo(characterId) {
+  const modal = document.getElementById("character-info-modal");
+  const contentDiv = document.getElementById("char-info-content");
+  contentDiv.innerHTML = "Loading...";
+
+
+  fetch(`/api/character/${characterId}`, {
+    method: 'GET'
+  })
+  .then(res => res.json())
+  .then(data => {
+    let inventoryHtml = "";
+    if (data.inventory && data.inventory.length > 0) {
+      inventoryHtml = "<strong>Inventory:</strong><ul>";
+      data.inventory.forEach(item => {
+        inventoryHtml += `<li>${item.name} - ${item.description} (Attack: ${item.attack_amount})</li>`;
+      });
+      inventoryHtml += "</ul>";
+    }
+
+    let spellsHtml = "";
+    if (data.spells && data.spells.length > 0) {
+      spellsHtml = "<strong>Spells:</strong><ul>";
+      data.inventory.forEach(item => {
+        spellsHtml += `<li>${item.name} - ${item.description} \n(Attack: ${item.attack_amount}, Level requirement: ${item.lvl_req})</li>`;
+      });
+      spellsHtml += "</ul>";
+    }
+
+    contentDiv.innerHTML = `
+      <p><strong>Name:</strong> ${data.name}</p>
+      <p><strong>Type:</strong> ${data.type}</p>
+      <p><strong>XP:</strong> ${data.xp}</p>
+      ${inventoryHtml}
+      ${spellsHtml}
+    `;
+
+    modal.style.display = "flex";
+  })
+  .catch(err => {
+    console.error(err);
+    contentDiv.innerHTML = "<p>Failed to load character data.</p>";
+  });
+}
+
+function closeCharacterInfoModal() {
+  document.getElementById("character-info-modal").style.display = "none";
+}
+</script>
+</body>

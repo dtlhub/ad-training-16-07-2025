@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>✨ Enchaintix Magic Battle ✨</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+    }
+
+    body {
+      background-image: url("{{ url_for('static', filename='bg1.jpg') }}"); 
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      color: #ff69b4;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .main-box {
+      background-color: rgba(255, 255, 255, 0.9);
+      border: 3px dashed #ff69b4;
+      border-radius: 20px;
+      box-shadow: 0 0 30px #ff69b4;
+      width: 100%;
+      max-width: 800px;
+      padding: 40px 30px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 3em;
+      text-shadow: 2px 2px #fff;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      font-size: 1.2em;
+      margin-bottom: 30px;
+    }
+
+    .buttons {
+      margin: 20px 0;
+    }
+
+    .buttons button,
+    .buttons a.button {
+      margin: 10px;
+    }
+
+    .popup {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .popup-content {
+      background-color: white;
+      border: 3px dashed #ff69b4;
+      border-radius: 20px;
+      padding: 30px;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 0 30px #ff69b4;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      width: calc(100% - 20px);
+      padding: 10px;
+      margin: 10px 0;
+      border: 2px solid #ffb6c1;
+      border-radius: 10px;
+      font-size: 1em;
+    }
+
+    a.button,
+    button {
+      display: inline-block;
+      background-color: #ff69b4;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 1em;
+      border-radius: 25px;
+      cursor: pointer;
+      margin-top: 10px;
+      text-decoration: none;
+      transition: background-color 0.3s ease;
+    }
+
+    a.button:hover,
+    button:hover {
+      background-color: #ff1493;
+    }
+
+    .funny-text {
+      font-size: 1em;
+      margin-top: 30px;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="main-box">
+    <h1>✨ Enchaintix Magic Battle ✨</h1>
+    <div class="subtitle">Unleash your magic and protect the magical realm!</div>
+
+    <div class="buttons">
+      <button onclick="openLogin()">🪄 Login</button>
+      <button onclick="openRegister()">🌟 Register</button>
+      <p><a href="/forgor" class="button">🔐 Forgot Password?</a></p>
+    </div>
+
+    <div class="funny-text">
+      Welcome to Enchaintix — where every glitter can defeat a dragon!
+      <br/><br/>
+      Choose your spell wisely... because sometimes even a fairy forgets her own password. 💅✨
+    </div>
+  </div>
+
+  <!-- Login Popup -->
+  <div id="login-popup" class="popup">
+    <div class="popup-content">
+      <h2>🪄 Login</h2>
+      <form action="/login" method="POST">
+        <input type="text" name="username" placeholder="Your Fairy Name" required />
+        <input type="password" name="password" placeholder="Secret Spell" required />
+        <button type="submit">Enter the Magic World</button>
+      </form>
+      <p style="margin-top:15px;">
+        Don't have wings yet? <a href="#" onclick="switchToRegister()">Register</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- Register Popup -->
+  <div id="register-popup" class="popup">
+    <div class="popup-content">
+      <h2>🌟 Register</h2>
+      <form action="/register" method="POST">
+        <input type="text" name="username" placeholder="Choose Your Fairy Name" required />
+        <input type="password" name="password" placeholder="Create Secret Spell" required />
+        <input type="text" name="secret_word" placeholder="Secret Word (for recovery)" required />
+        <button type="submit">Join Enchaintix</button>
+      </form>
+      <p style="margin-top:15px;">
+        Already sparkle? <a href="#" onclick="switchToLogin()">Login</a>
+      </p>
+    </div>
+  </div>
+  <script>
+    function openLogin() {
+      document.getElementById("login-popup").style.display = "flex";
+    }
+
+    function openRegister() {
+      document.getElementById("register-popup").style.display = "flex";
+    }
+
+    function switchToRegister() {
+      document.getElementById("login-popup").style.display = "none";
+      document.getElementById("register-popup").style.display = "flex";
+    }
+
+    function switchToLogin() {
+      document.getElementById("register-popup").style.display = "none";
+      document.getElementById("login-popup").style.display = "flex";
+    }
+
+    function closePopups() {
+      document.getElementById("login-popup").style.display = "none";
+      document.getElementById("register-popup").style.display = "none";
+    }
+
+    function openChat() {
+      alert("💬 Tech Support Chat:\n\nHi there! How can we help you today?\nYou can reach us at support@enchaintix.com or call 1-800-ENCHANT.");
+    }
+
+    // Close popup when clicking outside
+    window.onclick = function(event) {
+      const loginPopup = document.getElementById("login-popup");
+      const registerPopup = document.getElementById("register-popup");
+
+      if (event.target === loginPopup) {
+        loginPopup.style.display = "none";
+      }
+      if (event.target === registerPopup) {
+        registerPopup.style.display = "none";
+      }
+    };
+  </script>
+
+</body>
+</html>

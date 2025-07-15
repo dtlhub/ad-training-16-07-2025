@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🏆 Enchaintix Leaderboard</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+    }
+
+    body {
+      background-color: #ffe6f0;
+      color: #ff1493;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: start;
+      padding: 40px 20px;
+    }
+
+    /* Optional overlay for readability */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: -1;
+    }
+
+    h1 {
+      font-size: 3em;
+      text-shadow: 2px 2px #fff;
+      margin-bottom: 20px;
+    }
+
+    .leaderboard-container {
+      background-color: rgba(255, 255, 255, 0.9);
+      border: 3px dashed #ff69b4;
+      border-radius: 20px;
+      box-shadow: 0 0 30px #ff69b4;
+      padding: 30px;
+      width: 100%;
+      max-width: 900px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: center;
+    }
+
+    th, td {
+      padding: 15px;
+      border-bottom: 2px solid #ffb6c1;
+    }
+
+    th {
+      background-color: #ff69b4;
+      color: white;
+      font-size: 1.2em;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    tr:nth-child(even) {
+      background-color: #ffe6f0;
+    }
+
+    .rank {
+      font-weight: bold;
+      color: gold;
+    }
+
+    .top-player {
+      background-color: #fffacd !important;
+    }
+
+    .button {
+      display: inline-block;
+      background-color: #ff69b4;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 1em;
+      border-radius: 25px;
+      cursor: pointer;
+      margin-top: 20px;
+      text-decoration: none;
+      transition: background-color 0.3s ease;
+    }
+
+    .logo-img {
+      width: 60px;
+      height: auto;
+      border-radius: 8px;
+      display: block;
+      margin: 0 auto;
+    }
+    .button:hover {
+      background-color: #ff1493;
+    }
+
+    .sort-indicator {
+      font-size: 0.8em;
+      vertical-align: middle;
+      margin-left: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🏆 Enchaintix Leaderboard</h1>
+
+  <div class="leaderboard-container">
+
+    {% if all_chars %}
+      <table>
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th onclick="sortTable('name')">Character</th>
+            <th onclick="sortTable('type')">Type</th>
+            <th>Win Rate</th>
+            <th onclick="sortTable('wins')">Wins</th>
+            <th onclick="sortTable('xp')">XP</th>
+            <th>Owner</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for char in all_chars %}
+            <tr class="{% if loop.index == 1 %}top-player{% endif %}">
+              <td class="rank">{{ loop.index }}</td>
+              <td><img class="logo-img" src="{{ char.image_url }}" alt="">{{ char.name }}</td>
+              <td>{{ char.type | title }}</td>
+              <td>{{ "%.2f"|format(char.win_rate) }}%</td>
+              <td>{{ char.wins }}</td>
+              <td>{{ char.xp }}</td>
+              <td>{{ char.owner }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p style="text-align:center;">No characters found.</p>
+    {% endif %}
+
+    <a href="/dashboard" class="button">Back to Dashboard</a>
+  </div>
+
+  <script>
+    function sortTable(column) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const currentOrder = urlParams.get('order') || 'asc';
+
+
+      let newOrder = 'desc';
+      if (urlParams.get('sort_column') === column && currentOrder === 'desc') {
+        newOrder = 'asc';
+      }
+
+      urlParams.set('sort_column', column);
+      urlParams.set('order', newOrder);
+
+      window.location.search = urlParams.toString();
+    }
+  </script>
+
+  <script>
+    function sortTable(column) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const currentOrder = urlParams.get('order') || 'asc';
+
+
+      let newOrder = 'desc';
+      if (urlParams.get('sort_column') === column && currentOrder === 'desc') {
+        newOrder = 'asc';
+      }
+
+      urlParams.set('sort_column', column);
+      urlParams.set('order', newOrder);
+
+      window.location.search = urlParams.toString();
+    }
+  </script>
+
+</body>
+</html>

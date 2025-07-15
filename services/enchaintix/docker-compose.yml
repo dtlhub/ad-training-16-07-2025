@@ -1,0 +1,42 @@
+services:
+  db:
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: Dockerfile.postgres
+    environment:
+      POSTGRES_USER: enchaintix_user
+      POSTGRES_PASSWORD: pg_password
+      POSTGRES_DB: enchaintix_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+      - ./init-cleanup.sql:/docker-entrypoint-initdb.d/init-cleanup.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U enchaintix_user -d enchaintix_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  web:
+    restart: unless-stopped
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - DB_HOST=db
+      - DB_LOGIN=enchaintix_user
+      - DB_PASS=pg_password
+      - DB_NAME=enchaintix_db
+      - SUPPORT_HOST=10.13.37.10:1234
+    pids_limit: 256
+    mem_limit: 256M
+    cpus: 2
+
+    ports:
+      - "5281:5281"
+
+volumes:
+  postgres_data:
