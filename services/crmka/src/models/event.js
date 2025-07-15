@@ -5,4 +5,4 @@ export default model('Event', new Schema({
     date: { type: Date, required: true, tpl: 'date' },
     description: { type: String, unique: true, required: true, tpl: 'textarea' },
     raiting: { type: Number, required: true, tpl: 'number' }
-}));
+}, { timestamps: true }));

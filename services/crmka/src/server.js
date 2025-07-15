@@ -10,6 +10,7 @@ import indexRoutes from './routes/index.js';
 import authRoutes from './routes/auth.js';
 import companyRoutes from './routes/company.js';
 import apiRoutes from './routes/api.js';
+import startCleaner from './service/cleaner.js';
 
 const app = express();
 
@@ -36,6 +37,8 @@ app.use('/api', apiRoutes);
 app.use(errorMiddleware);
 
 await migration();
+
+startCleaner(config.CLEANING_EVERY);
 
 app.listen(config.PORT, () => {
     console.log(`Listen port ${config.PORT}`);

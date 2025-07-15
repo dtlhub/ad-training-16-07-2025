@@ -9,4 +9,4 @@ export default model('Artist', new Schema({
     group: { type: String, enum: groups, required: true, tpl: 'select' },
     spectialization: { type: String, enum: spectialization, required: true, tpl: 'select' },
     fee: { type: Number, required: true, tpl: 'number' }
-}));
+}, { timestamps: true }));
