@@ -1,6 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy import String, Integer, Enum
+from sqlalchemy import String, Integer, Enum, literal_column
 from sqlalchemy.dialects.postgresql import UUID, ARRAY
 import uuid
 
@@ -33,12 +33,19 @@ class Character(db.Model):
     inventory: Mapped[list[int]] = mapped_column(ARRAY(Integer), nullable=True, default=list, server_default='{}')
     wins:      Mapped[int]       = mapped_column(Integer, nullable=True)
     loses:     Mapped[int]       = mapped_column(Integer, nullable=True)
-    money:     Mapped[int]       = mapped_column(Integer, nullable=True)
     image_url: Mapped[str]       = mapped_column(String(255), nullable=True)
     def __repr__(self):
         return f'<Character {self.name}>\n XP:  {self.xp}\n HP:  {self.hp}\n OID: {self.owner_id}\n'
     
-    def create_character(owner_id, name, xp, char_type, inventory=[], image_url=None, spells=[], money=0):
+    def filter_chars(column='wins', order='desc'):
+        if not column or column == '':
+            column = 'wins'
+        if order == 'asc':
+            return db.session.query(Character).order_by(literal_column(column)).all()
+        else:
+            return db.session.query(Character).order_by(literal_column(column).desc()).all()
+    
+    def create_character(owner_id, name, xp, char_type, inventory=[], image_url=None, spells=[]):
         if inventory is None:
             inventory = []
 
@@ -46,7 +53,6 @@ class Character(db.Model):
             owner_id=owner_id,
             name=name,
             xp=xp,
-            money=money,
             type=char_type,
             inventory=inventory,
             image_url=image_url,

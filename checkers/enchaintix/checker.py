@@ -2,7 +2,7 @@
 
 import sys
 import requests
-
+import os
 from checklib import *
 from example_lib import *
 from random import sample, randint
@@ -33,8 +33,9 @@ class Checker(BaseChecker):
 
         self.mch.register(session, username, password, secret_answer)
         self.mch.login(session, username, password,secret_answer, Status.MUMBLE)
-        #value = self.mch.recover_password(session, username, password,secret_answer) 
-        #self.assert_eq(value, True, "Tech support not working")
+        if os.getenv("PERFORM_TECH_SUPPORT_CHECKS") == 'True':
+            value = self.mch.recover_password(session, username, password,secret_answer) 
+            self.assert_eq(value, True, "Tech support not working")
         self.mch.create_char(session, char_name, char_type, randint(1,6))
         self.mch.select_char(session)
 
@@ -62,8 +63,9 @@ class Checker(BaseChecker):
         username, password = flag_id.split(':')
 
         self.mch.login(session, username, password, flag,Status.CORRUPT)
-        #value = self.mch.recover_password(session, username, password,flag)
-        #self.assert_eq(value, True, "Tech support not working", Status.CORRUPT)
+        if os.getenv("PERFORM_TECH_SUPPORT_CHECKS") == 'True':
+            value = self.mch.recover_password(session, username, password, flag) 
+            self.assert_eq(value, True, "Tech support not working")
         for _ in range(20):
             self.mch.play(session, 'pvp')
         self.mch.check_leaderboard(session)

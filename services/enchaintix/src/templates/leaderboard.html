@@ -48,7 +48,7 @@
       box-shadow: 0 0 30px #ff69b4;
       padding: 30px;
       width: 100%;
-      max-width: 800px;
+      max-width: 900px;
     }
 
     table {
@@ -66,6 +66,8 @@
       background-color: #ff69b4;
       color: white;
       font-size: 1.2em;
+      cursor: pointer;
+      user-select: none;
     }
 
     tr:nth-child(even) {
@@ -95,16 +97,22 @@
       transition: background-color 0.3s ease;
     }
 
-  .logo-img {
-    width: 60px;
-    height: auto;
-    border-radius: 8px;
-    display: block;
-    margin: 0 auto;
-  }
+    .logo-img {
+      width: 60px;
+      height: auto;
+      border-radius: 8px;
+      display: block;
+      margin: 0 auto;
+    }
 
     .button:hover {
       background-color: #ff1493;
+    }
+
+    .sort-indicator {
+      font-size: 0.8em;
+      vertical-align: middle;
+      margin-left: 5px;
     }
   </style>
 </head>
@@ -113,27 +121,30 @@
   <h1>🏆 Enchaintix Leaderboard</h1>
 
   <div class="leaderboard-container">
-    {% if ranked_top_characters %}
+
+    {% if all_chars %}
       <table>
         <thead>
           <tr>
             <th>Rank</th>
-            <th>Character</th>
-            <th>Type</th>
+            <th onclick="sortTable('name')">Character</th>
+            <th onclick="sortTable('type')">Type</th>
             <th>Win Rate</th>
-            <th>Total Battles</th>
+            <th onclick="sortTable('wins')">Wins</th>
+            <th onclick="sortTable('xp')">XP</th>
             <th>Owner</th>
           </tr>
         </thead>
         <tbody>
-          {% for item in ranked_top_characters %}
+          {% for char in all_chars %}
             <tr class="{% if loop.index == 1 %}top-player{% endif %}">
-              <td class="rank">{{ item.rank }}</td>
-              <td><img class="logo-img" src="{{item.character.image_url}}" alt=""/>{{ item.character.name }}</td>
-              <td>{{ item.character.type | title }}</td>
-              <td>{{ item.character.win_rate }}%</td>
-              <td>{{ item.character.wins + item.character.loses }}</td>
-              <td>{{ item.character.owner }}</td>
+              <td class="rank">{{ loop.index }}</td>
+              <td><img class="logo-img" src="{{ char.image_url }}" alt="">{{ char.name }}</td>
+              <td>{{ char.type | title }}</td>
+              <td>{{ "%.2f"|format(char.win_rate) }}%</td>
+              <td>{{ char.wins }}</td>
+              <td>{{ char.xp }}</td>
+              <td>{{ char.owner }}</td>
             </tr>
           {% endfor %}
         </tbody>
@@ -144,6 +155,24 @@
 
     <a href="/dashboard" class="button">Back to Dashboard</a>
   </div>
+
+  <script>
+    function sortTable(column) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const currentOrder = urlParams.get('order') || 'asc';
+
+
+      let newOrder = 'desc';
+      if (urlParams.get('sort_column') === column && currentOrder === 'desc') {
+        newOrder = 'asc';
+      }
+
+      urlParams.set('sort_column', column);
+      urlParams.set('order', newOrder);
+
+      window.location.search = urlParams.toString();
+    }
+  </script>
 
 </body>
 </html>

@@ -59,19 +59,44 @@
         z-index: 10;
     }
     .character-card {
-      background-color: #fff;
-      border: 2px solid #ffb6c1;
-      border-radius: 15px;
-      padding: 15px;
-      margin-bottom: 15px;
-      text-align: center;
-    }
-    .character-card img {
-      width: 80px;
-      height: 80px;
-      object-fit: cover;
-      border-radius: 50%;
-    }
+  background-color: #fff;
+  border: 2px solid #ffb6c1;
+  border-radius: 15px;
+  padding: 15px;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap; /* Allows stacking on small screens */
+}
+
+.character-card img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.card-details {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  min-width: 200px;
+  gap: 4px;
+}
+
+.card-details span {
+  font-size: 0.9em;
+  color: #333;
+}
+.char-name {
+  cursor: pointer;
+  color: #ff69b4;
+}
+.char-name:hover {
+  text-decoration: underline;
+}
     .battle-options {
       background-color: rgba(255, 255, 255, 0.9);
       border: 3px dashed #ff69b4;
@@ -205,7 +230,9 @@
         {% for character in characters %}
           <div class="character-card">
             <img src="{{ character.image_url }}" alt="{{ character.name }}">
-            <h3>{{ character.name }}</h3>
+            <span class="char-name" onclick="openCharacterInfo('{{ character.id }}')">
+              <strong>{{ character.name }}</strong>
+            </span>
             <p>Level: {{ character.lvl }}</p>
             <p>Strength: {{ character.strength }}</p>
             <p>Win Rate: {{ character.win_rate }}%</p>
@@ -289,6 +316,14 @@
     <button onclick="closeModal()" class="button">Close</button>
   </div>
 </div>
+<div id="character-info-modal" class="popup">
+  <div class="popup-content" style="width: 400px;">
+    <h2 id="char-info-title">Character Info</h2>
+    <div id="char-info-content" style="text-align: left;">
+    </div>
+    <button onclick="closeCharacterInfoModal()" class="button">Close</button>
+  </div>
+</div>
   <script>
     function openModal() {
       document.getElementById("add-character-modal").style.display = "flex";
@@ -365,5 +400,55 @@
     document.getElementById("battle-result-modal").style.display = "none";
     location.reload();
   }
+</script>
+<script>
+function openCharacterInfo(characterId) {
+  const modal = document.getElementById("character-info-modal");
+  const contentDiv = document.getElementById("char-info-content");
+  contentDiv.innerHTML = "Loading...";
+
+
+  fetch(`/api/character/${characterId}`, {
+    method: 'GET'
+  })
+  .then(res => res.json())
+  .then(data => {
+    let inventoryHtml = "";
+    if (data.inventory && data.inventory.length > 0) {
+      inventoryHtml = "<strong>Inventory:</strong><ul>";
+      data.inventory.forEach(item => {
+        inventoryHtml += `<li>${item.name} - ${item.description} (Attack: ${item.attack_amount})</li>`;
+      });
+      inventoryHtml += "</ul>";
+    }
+
+    let spellsHtml = "";
+    if (data.spells && data.spells.length > 0) {
+      spellsHtml = "<strong>Spells:</strong><ul>";
+      data.inventory.forEach(item => {
+        spellsHtml += `<li>${item.name} - ${item.description} \n(Attack: ${item.attack_amount}, Level requirement: ${item.lvl_req})</li>`;
+      });
+      spellsHtml += "</ul>";
+    }
+
+    contentDiv.innerHTML = `
+      <p><strong>Name:</strong> ${data.name}</p>
+      <p><strong>Type:</strong> ${data.type}</p>
+      <p><strong>XP:</strong> ${data.xp}</p>
+      ${inventoryHtml}
+      ${spellsHtml}
+    `;
+
+    modal.style.display = "flex";
+  })
+  .catch(err => {
+    console.error(err);
+    contentDiv.innerHTML = "<p>Failed to load character data.</p>";
+  });
+}
+
+function closeCharacterInfoModal() {
+  document.getElementById("character-info-modal").style.display = "none";
+}
 </script>
 </body>

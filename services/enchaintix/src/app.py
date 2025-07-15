@@ -81,7 +81,7 @@ def battle():
         if not enemy or enemy.id == challenger.id:
             return jsonify({"status": "error", "response": "PvP Error occurred, try again later"})
 
-        difficulty = character_result(enemy)
+        difficulty = character_strength(enemy)
         result = character_result(challenger) > character_result(enemy)
         response['enemy'] = f'/api/character/{enemy.id}'
         response['earned_exp'] = round(pow(1.83, difficulty) * 3)
@@ -140,7 +140,10 @@ def get_user(name):
 @app.route('/api/character/<id>', methods=['GET'])
 @login_required
 def get_character(id):
-    return jsonify(model_to_dict(Character.query.filter_by(id=uuid.UUID(id)).first()))
+    model = model_to_dict(Character.query.filter_by(id=uuid.UUID(id)).first())
+    model['spells'] = [SPELLS[number] for number in model['spells']]
+    model['inventory'] = [WEAPONS[number] for number in model['inventory']]
+    return jsonify(model)
 
 
 @app.route('/')
@@ -152,19 +155,15 @@ def main():
 @app.route('/leaderboard')
 @login_required
 def leaderboard():
-    all_chars = Character.query.all()
+    sort_column,order  = request.args.get("sort_column"), request.args.get("order")
+    all_chars = Character.filter_chars(sort_column, order)
 
     for char in all_chars:
         total = char.wins + char.loses
         char.win_rate = round((char.wins / total * 100), 2) if total > 0 else 0
         char.owner = Userdb.query.filter_by(id=char.owner_id).first().username
 
-    sorted_chars = sorted(all_chars, key=lambda c: c.win_rate, reverse=True)
-    top_10 = sorted_chars[:10]
-
-    ranked = [{"rank": idx+1, "character": char} for idx, char in enumerate(top_10)]
-
-    return render_template("leaderboard.html", ranked_top_characters=ranked)
+    return render_template("leaderboard.html", all_chars=all_chars)
 
 @app.route('/dashboard')
 @login_required
@@ -215,7 +214,6 @@ def add_character():
     Character.create_character(
         owner_id=current_user.get_id(),
         name=name,
-        money=100,
         xp=0,
         spells=spells,
         char_type=char_type,
