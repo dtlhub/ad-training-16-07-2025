@@ -39,7 +39,7 @@ class Checker(BaseChecker):
         self.mch.create_char(session, char_name, char_type, randint(1,6))
         self.mch.select_char(session)
 
-        for _ in range(5):
+        for _ in range(3):
             self.mch.play(session)
 
         self.cquit(Status.OK)
@@ -53,9 +53,8 @@ class Checker(BaseChecker):
         self.mch.create_char(session, char_name, char_type, randint(1,6))
         self.mch.select_char(session)
 
-        for _ in range(20):
+        for _ in range(3):
             self.mch.play(session, 'pvp')
-        self.mch.check_leaderboard(session)
         self.cquit(Status.OK, f'{username}:{password}', f'')
 
     def get(self, flag_id: str, flag: str, vuln: str):
@@ -66,9 +65,8 @@ class Checker(BaseChecker):
         if os.getenv("PERFORM_TECH_SUPPORT_CHECKS") == 'True':
             value = self.mch.recover_password(session, username, password, flag) 
             self.assert_eq(value, True, "Tech support not working")
-        for _ in range(5):
+        for _ in range(3):
             self.mch.play(session, 'pvp')
-        self.mch.check_leaderboard(session)
         
         self.cquit(Status.OK)
 

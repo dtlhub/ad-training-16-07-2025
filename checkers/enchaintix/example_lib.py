@@ -47,29 +47,11 @@ class CheckMachine:
         self.c.assert_neq(character_id, None, "Character creation failed")
         session.post(f'{self.url}/api/user/select_character', data={'character_id': character_id})
     
-    def check_leaderboard(self, session: requests.Session):
-        r = session.get(f'{self.url}/leaderboard')
-        soup = BeautifulSoup(r.text, 'html.parser')
-        td_tags = soup.find_all('td')
-        td_tags = td_tags[:100]
-        cookies_reuse = {cookie.name: cookie.value for cookie in session.cookies}
-        for td in td_tags:
-            img = td.find('img')
-            if img:
-                image_url = img.get('src')
-                if image_url:
-                    session.get(image_url if 'http' in image_url else f'{self.url}{image_url}',cookies=cookies_reuse)
 
     def play(self, session: requests.Session,  mode: str = 'pve'):
         data = session.post(f'{self.url}/api/game/battle', data={'type': mode})
         if data.json()['status'] == 'error' or data.json()['status'] == 'unknown':
             return
-        enemy = data.json()['enemy']
-        cookies_reuse = {cookie.name: cookie.value for cookie in session.cookies}
-        if mode == 'pvp':
-            image_url = session.get(f'{self.url}{enemy}').json()['image_url']
-            if image_url:
-                session.get(image_url if 'http' in image_url else f'{self.url}{image_url}', cookies=cookies_reuse)
 
                  
 

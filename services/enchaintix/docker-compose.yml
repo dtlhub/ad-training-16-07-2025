@@ -1,7 +1,9 @@
 services:
   db:
     restart: unless-stopped
-    image: postgres:16
+    build:
+      context: .
+      dockerfile: Dockerfile.postgres
     environment:
       POSTGRES_USER: enchaintix_user
       POSTGRES_PASSWORD: pg_password
@@ -10,6 +12,7 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data/
+      - ./init-cleanup.sql:/docker-entrypoint-initdb.d/init-cleanup.sql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U enchaintix_user -d enchaintix_db"]
       interval: 5s

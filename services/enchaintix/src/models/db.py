@@ -1,6 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy import String, Integer, Enum, literal_column
+from sqlalchemy import String, Integer, Enum, literal_column, func, DateTime
 from sqlalchemy.dialects.postgresql import UUID, ARRAY
 import uuid
 
@@ -19,21 +19,23 @@ class User(db.Model):
     username:      Mapped[str]             = mapped_column(String(100), unique=True)
     password:      Mapped[str]             = mapped_column(String(100))
     secret_answer: Mapped[str]             = mapped_column(String, nullable=True)
+    created_at:    Mapped[DateTime]        = mapped_column(DateTime(timezone=True), server_default=func.now())
     def __repr__(self):
         return f'<User {self.username}>'
         
 class Character(db.Model):
     __tablename__ = 'characters'
-    id:        Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    owner_id:  Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), default=uuid.uuid4)
-    name:      Mapped[str]       = mapped_column(String(100))
-    spells:    Mapped[list[int]] = mapped_column(ARRAY(Integer), nullable=True, default=list, server_default='{}')
-    xp:        Mapped[int]       = mapped_column(Integer)
-    type:      Mapped[str]       = mapped_column(Enum(*UserType.TYPES, name='user_type'))
-    inventory: Mapped[list[int]] = mapped_column(ARRAY(Integer), nullable=True, default=list, server_default='{}')
-    wins:      Mapped[int]       = mapped_column(Integer, nullable=True)
-    loses:     Mapped[int]       = mapped_column(Integer, nullable=True)
-    image_url: Mapped[str]       = mapped_column(String(255), nullable=True)
+    id:         Mapped[uuid.UUID]   = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    owner_id:   Mapped[uuid.UUID]   = mapped_column(UUID(as_uuid=True), default=uuid.uuid4)
+    name:       Mapped[str]         = mapped_column(String(100))
+    spells:     Mapped[list[int]]   = mapped_column(ARRAY(Integer), nullable=True, default=list, server_default='{}')
+    xp:         Mapped[int]         = mapped_column(Integer)
+    type:       Mapped[str]         = mapped_column(Enum(*UserType.TYPES, name='user_type'))
+    inventory:  Mapped[list[int]]   = mapped_column(ARRAY(Integer), nullable=True, default=list, server_default='{}')
+    wins:       Mapped[int]         = mapped_column(Integer, nullable=True)
+    loses:      Mapped[int]         = mapped_column(Integer, nullable=True)
+    image_url:  Mapped[str]         = mapped_column(String(255), nullable=True)
+    created_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     def __repr__(self):
         return f'<Character {self.name}>\n XP:  {self.xp}\n HP:  {self.hp}\n OID: {self.owner_id}\n'
     
