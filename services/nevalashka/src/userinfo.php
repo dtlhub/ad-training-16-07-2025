@@ -46,11 +46,12 @@ function displayPublicationsFromUser($userid){
 }
 
 /* Requested Username error checking */
+$user_table_id = $_GET['user'];
 $req_user = trim($_GET['user']);
 if(!$req_user || strlen($req_user) == 0 ||
    !eregi("^([0-9a-z])+$", $req_user) ||
    !$database->usernameTaken($req_user)){
-   die("Username not registered");
+   echo ("Username not registered");
 }
 
 /* Logged in user viewing own account */
@@ -58,7 +59,7 @@ if(strcmp($session->username,$req_user) == 0){
    echo "<h1>My Account</h1>";
 }
 /* Visitor not viewing own account */
-else{
+else {
    echo "<h1>User Info</h1>";
 }
 
@@ -71,7 +72,7 @@ echo "<b>Username: ".$req_user_info['username']."</b><br>";
 /* Email */
 echo "<b>Email:</b> ".$req_user_info['email']."<br>";
 
-displayPublicationsFromUser($req_user_info['username']);
+displayPublicationsFromUser($user_table_id);
 
 /**
  * Note: when you add your own fields to the users table
@@ -97,3 +98,4 @@ echo "<br>Back To [<a href=\"main.php\">Main</a>]<br>";
 
 </body>
 </html>
+
