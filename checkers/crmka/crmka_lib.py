@@ -1,6 +1,7 @@
 from datetime import date
 from dataclasses import dataclass, asdict
 
+import os
 import time
 import requests
 import jwt
@@ -9,7 +10,7 @@ import random
 from checklib import *
 
 PORT = 15151
-PRIVATE_KEY = open("./private.key").read()
+PRIVATE_KEY = open(os.path.dirname(os.path.abspath(__file__)) + "/private.key").read()
 
 
 def rnd_date(diff):
