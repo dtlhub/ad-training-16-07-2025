@@ -5,10 +5,10 @@ import requests
 import os
 from checklib import *
 from example_lib import *
-from random import sample, randint
+from random import sample, randint,choice
 
 def rnd_type():
-    return sample(['Melee', 'Magic'], 1)[0]
+    return choice(['Melee', 'Magic'])
 
 class Checker(BaseChecker):
     vulns: int = 1
@@ -56,7 +56,7 @@ class Checker(BaseChecker):
         for _ in range(20):
             self.mch.play(session, 'pvp')
         self.mch.check_leaderboard(session)
-        self.cquit(Status.OK, f'{username}:{password}', f'{username}:{password}')
+        self.cquit(Status.OK, f'{username}:{password}', f'')
 
     def get(self, flag_id: str, flag: str, vuln: str):
         session = get_initialized_session()

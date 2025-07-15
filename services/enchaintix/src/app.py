@@ -172,24 +172,27 @@ def dashboard():
     characters = Character.query.filter_by(owner_id=user_id).all()
     for char in characters:
         total = char.wins + char.loses
+        char.id = str(char.id)
         char.win_rate = round((char.wins / total * 100) if total > 0 else 0, 2)
         char.lvl = get_level_from_xp(char.xp)
         char.strength = character_strength(char) 
 
     top_characters = Character.query.all()
     top_characters.sort(key=lambda c: ((c.wins / (c.wins + c.loses)) if (c.wins + c.loses) > 0 else 0), reverse=True)
-    top_characters = top_characters[:10]
+    top_characters = top_characters[:5]
 
     ranked_top_characters = [{"rank": idx+1, "character": c} for idx, c in enumerate(top_characters)]
 
     static_dir = 'static/default_images/'
     default_images = [f'/{static_dir}{img}' for img in listdir(static_dir)]
-
+    chid = session.get('selected_character_id')
+    print(chid)
     return render_template(
         'authenticated_index.html',
         characters=characters,
         ranked_top_characters=ranked_top_characters,
-        default_images=default_images
+        default_images=default_images,
+        selected_id=chid
     )
 
 @app.route('/api/user/select_character', methods=['POST'])

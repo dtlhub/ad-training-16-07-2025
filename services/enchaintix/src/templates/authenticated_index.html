@@ -78,6 +78,25 @@
   flex-shrink: 0;
 }
 
+.selected-character {
+  border: 3px solid #4CAF50;
+  box-shadow: 0 0 10px #4CAF50;
+  position: relative;
+}
+
+.selected-label {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: #4CAF50;
+  color: white;
+  padding: 4px 8px;
+  font-size: 0.8em;
+  border-radius: 5px;
+  font-weight: bold;
+  z-index: 10;
+}
+
 .card-details {
   display: flex;
   flex-direction: column;
@@ -228,14 +247,17 @@
         <h2>Your Characters</h2>
       {% if characters %}
         {% for character in characters %}
-          <div class="character-card">
+          <div class="character-card {% if selected_id == character.id %}selected-character{% endif %}">
+            {% if selected_id == character.id %}
+              <span class="selected-label">✅ Selected</span>
+            {% endif %}
             <img src="{{ character.image_url }}" alt="{{ character.name }}">
             <span class="char-name" onclick="openCharacterInfo('{{ character.id }}')">
               <strong>{{ character.name }}</strong>
             </span>
             <p>Level: {{ character.lvl }}</p>
             <p>Strength: {{ character.strength }}</p>
-            <p>Win Rate: {{ character.win_rate }}%</p>
+            <p>Win Rate: {{ "%.2f"|format(character.win_rate) }}%</p>
             <form action="/api/user/select_character" method="POST">
               <input type="hidden" name="character_id" value="{{ character.id }}">
               <button type="submit" class="button">Select for Battle</button>

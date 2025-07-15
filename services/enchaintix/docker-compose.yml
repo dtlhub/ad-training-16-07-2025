@@ -27,7 +27,7 @@ services:
       - DB_LOGIN=enchaintix_user
       - DB_PASS=pg_password
       - DB_NAME=enchaintix_db
-      - SUPPORT_HOST=localhost:1234
+      - SUPPORT_HOST=10.13.37.10:1234
     pids_limit: 256
     mem_limit: 256M
     cpus: 2
