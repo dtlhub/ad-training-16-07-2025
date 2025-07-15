@@ -12,7 +12,7 @@ def rnd_type():
 
 class Checker(BaseChecker):
     vulns: int = 1
-    timeout: int = 30
+    timeout: int = 20
     uses_attack_data: bool = False
 
     def __init__(self, *args, **kwargs):
