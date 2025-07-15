@@ -1,2 +1,5 @@
 checklib
+beautifulsoup4
+requests
 pwntools
+
