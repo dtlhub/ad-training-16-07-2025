@@ -1,0 +1,19 @@
+{
+  "name": "crm-unnamed",
+  "version": "1.0.0",
+  "description": "ad unnamed service",
+  "main": "server.js",
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "dotenv": "^17.2.0",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "express-session": "^1.18.1",
+    "ejs": "^3.1.10",
+    "bcrypt": "^6.0.0",
+    "mongoose": "^8.16.3",
+    "node-schedule": "^2.1.1"
+  }
+}

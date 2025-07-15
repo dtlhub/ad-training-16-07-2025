@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('partial/header', {title: 'Login'}); -%>    
+</head>
+<body class="d-flex align-items-center py-4 bg-body-tertiary">
+    <main class="form-signin w-100 m-auto">
+        <% if (locals.errors) { %>
+            <div class="alert alert-danger"><%= errors %></div>
+        <% } %>
+
+        <form action="/login" method="POST">
+            <h1 class="h3 mb-3 fw-normal">Login</h1>
+            <div class="mb-1 form-floating"> 
+                <input type="text" class="form-control" id="username" name="username"> 
+                <label for="username">Username</label> 
+            </div>
+            <div class="mb-2 form-floating">
+                <input type="password" class="form-control" id="password" name="password"> 
+                <label for="password">Password</label> 
+            </div>
+            <button class="btn btn-primary w-100 py-2" type="submit">login</button>
+        </form>
+    </main>
+</body>
+</html>

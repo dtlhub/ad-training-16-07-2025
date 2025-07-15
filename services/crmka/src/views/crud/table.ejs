@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="auto">
+<head>
+    <%- include('../partial/header', {title: name}); -%>    
+</head>
+<body>
+    <%- include('../partial/nav'); -%>
+    <div class="container-fluid">
+        <div class="row">
+            <%- include('../partial/sidebar'); -%>
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2"><%= ucFirst(name) %></h1>
+                </div>
+                <a href="/company/<%= name %>s/new">Create <%= name %></a>
+                <table class="table table-striped crud-table">
+                    <thead>
+                        <tr>
+                            <% Object.keys(schema).forEach(fieldName => { %>
+                                <th scope="col"><%= fieldName %></th>
+                            <% }) %>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% items.forEach(item => { %>
+                            <tr>
+                                <% Object.entries(schema).forEach(([fieldName, field]) => { %>
+                                    <td><%= prepareFieldValue(item?.[fieldName], field) %></td>
+                                <% }) %>
+                                <td>
+                                    <a href="/company/<%= name %>s/<%= item?._id %>">edit</a>
+                                    &nbsp;
+                                    <a href="/company/<%= name %>s/<%= item?._id %>/delete">delete</a>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </main>
+        </div>
+    </div>
+</body>
+</html>
