@@ -2,7 +2,7 @@
 
 [![check-services](https://github.com/dtlhub/ad-training-16-07-2025/actions/workflows/check-services.yml/badge.svg?branch=master&event=push)](https://github.com/dtlhub/ad-training-16-07-2025/actions/workflows/check-services.yml)
 
-Attack-Defense CTF training, which was developed by members of [dtl](https://ctftime.org/team/157017) and [Rop Runners](https://ctftime.org/team/279418) teams.
+Attack-Defense CTF training for high-school students, which was developed by members of [dtl](https://ctftime.org/team/157017) and [Rop Runners](https://ctftime.org/team/279418) teams.
 
 ![Top of the scoreboard](./screenshots/top.png)
 
