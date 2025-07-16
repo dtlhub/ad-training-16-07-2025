@@ -10,10 +10,10 @@ Attack-Defense CTF training for high-school students, which was developed by mem
 
 | Service                             | Language   | Vulns | Authors |
 | ----------------------------------- | ---------- | ----- | ------- |
-| [battlebots](/services/battlebots/) | C          | ...   | ...     |
+| [battlebots](/services/battlebots/) | C          | ...   | [@FlexMaster420](https://t.me/FlexMaster420) |
 | [crmka](/services/crmka/)           | JavaScript | ...   | ...     |
 | [enchaintix](/services/enchaintix/) | Python     | ...   | ...     |
-| [flagbin](/services/flagbin/)       | C          | ...   | ...     |
+| [flagbin](/services/flagbin/)       | C          | ...   | [@FlexMaster420](https://t.me/FlexMaster420) |
 | [nevalashka](/services/nevalashka/) | PHP        | ...   | ...     |
 
 ## Infrastructure
