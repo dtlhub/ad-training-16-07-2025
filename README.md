@@ -11,7 +11,7 @@ Attack-Defense CTF training for high-school students, which was developed by mem
 | Service                             | Language   | Vulns | Authors |
 | ----------------------------------- | ---------- | ----- | ------- |
 | [battlebots](/services/battlebots/) | C          | got rw via integer overflow; overwrite printf to scanf; rop to system | [@FlexMaster420](https://t.me/FlexMaster420) |
-| [crmka](/services/crmka/)           | JavaScript | ...   | ...     |
+| [crmka](/services/crmka/)           | JavaScript | chain: bypass jwt authentication via logic bug in exception handler + insufficient filtering in dynamical import leads to RCE | @bytehope |
 | [enchaintix](/services/enchaintix/) | Python     | ...   | ...     |
 | [flagbin](/services/flagbin/)       | C          | path traversal via retrieve flag; read maps - ../../proc/self/maps; read mem - ../../proc/self/mem | [@FlexMaster420](https://t.me/FlexMaster420) |
 | [nevalashka](/services/nevalashka/) | PHP        | ...   | ...     |
