@@ -11,10 +11,10 @@ Attack-Defense CTF training for high-school students, which was developed by mem
 | Service                             | Language   | Vulns | Authors |
 | ----------------------------------- | ---------- | ----- | ------- |
 | [battlebots](/services/battlebots/) | C          | got rw via integer overflow; overwrite printf to scanf; rop to system | [@FlexMaster420](https://t.me/FlexMaster420) |
-| [crmka](/services/crmka/)           | JavaScript | chain: bypass jwt authentication via logic bug in exception handler + insufficient filtering in dynamical import leads to RCE | @bytehope |
-| [enchaintix](/services/enchaintix/) | Python     | ...   | ...     |
-| [flagbin](/services/flagbin/)       | C          | path traversal via retrieve flag; read maps - ../../proc/self/maps; read mem - ../../proc/self/mem | [@FlexMaster420](https://t.me/FlexMaster420) |
-| [nevalashka](/services/nevalashka/) | PHP        | ...   | ...     |
+| [crmka](/services/crmka/)           | JavaScript | Chain: bypass jwt authentication via logic bug in exception handler + insufficient filtering in dynamical import leads to RCE | @bytehope |
+| [enchaintix](/services/enchaintix/) | Python     | Prompt injection, SQL injection | @c3N1T3Lb |
+| [flagbin](/services/flagbin/)       | C          | Path traversal via retrieve flag; read maps - ../../proc/self/maps; read mem - ../../proc/self/mem | [@FlexMaster420](https://t.me/FlexMaster420) |
+| [nevalashka](/services/nevalashka/) | PHP        | SQL injection, auth bypass, IDOR | @vanindm |
 
 ## Infrastructure
 
